@@ -1,0 +1,39 @@
+{{- define "main" -}}
+<link rel="stylesheet" href="/css/features.css">
+
+<h1>📅 文章归档</h1>
+
+<div class="archives-container">
+    {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections -}}
+    {{- $pagesByYear := $pages.GroupByDate "2006" -}}
+
+    {{- range $pagesByYear -}}
+    <div class="archive-year">
+        <div class="archive-year-title">
+            {{ .Key }}
+            <span class="archive-year-count">({{ len .Pages }} 篇)</span>
+        </div>
+
+        {{- $pagesByMonth := .Pages.GroupByDate "01" -}}
+        {{- range $pagesByMonth -}}
+        <div class="archive-month">
+            <div class="archive-month-title">
+                {{- $monthNum := .Key -}}
+                {{- $months := slice "一月" "二月" "三月" "四月" "五月" "六月" "七月" "八月" "九月" "十月" "十一月" "十二月" -}}
+                {{- index $months (sub (int .Key) 1) -}}
+            </div>
+            <ul class="archive-posts">
+                {{- range .Pages -}}
+                <li class="archive-post">
+                    <a href="{{ .Permalink }}">{{ .Title }}</a>
+                    <span class="archive-post-date">{{ .Date.Format "01-02" }}</span>
+                </li>
+                {{- end -}}
+            </ul>
+        </div>
+        {{- end -}}
+    </div>
+    {{- end -}}
+</div>
+
+{{- end -}}

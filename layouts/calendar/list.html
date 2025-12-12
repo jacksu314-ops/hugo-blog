@@ -1,0 +1,316 @@
+{{- define "main" -}}
+<link rel="stylesheet" href="/css/calendar.css">
+
+<h1>📅 文章日历</h1>
+
+<div class="calendar-container">
+  <!-- Heatmap Section -->
+  <section class="calendar-section">
+    <h2>🔥 发文热力图</h2>
+    <div class="heatmap-wrapper">
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="heatmap-legend">
+      <span>少</span>
+      <div class="heatmap-legend-box heatmap-day"></div>
+      <div class="heatmap-legend-box heatmap-day level-1"></div>
+      <div class="heatmap-legend-box heatmap-day level-2"></div>
+      <div class="heatmap-legend-box heatmap-day level-3"></div>
+      <div class="heatmap-legend-box heatmap-day level-4"></div>
+      <span>多</span>
+    </div>
+  </section>
+
+  <!-- Monthly Calendar Section -->
+  <section class="calendar-section">
+    <h2>📆 月历视图</h2>
+    <div class="monthly-calendar">
+      <div class="calendar-header">
+        <button class="calendar-nav" id="prev-month">←</button>
+        <h3 class="calendar-title" id="calendar-title"></h3>
+        <button class="calendar-nav" id="next-month">→</button>
+      </div>
+      <div class="weekdays">
+        <div class="weekday">日</div>
+        <div class="weekday">一</div>
+        <div class="weekday">二</div>
+        <div class="weekday">三</div>
+        <div class="weekday">四</div>
+        <div class="weekday">五</div>
+        <div class="weekday">六</div>
+      </div>
+      <div class="days" id="calendar-days"></div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="calendar-section">
+    <h2>📊 统计</h2>
+    <div class="calendar-stats">
+      <div class="stat">
+        <div class="stat-value" id="total-posts">0</div>
+        <div class="stat-label">文章总数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="posts-this-year">0</div>
+        <div class="stat-label">今年发文</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="active-days">0</div>
+        <div class="stat-label">活跃天数</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Tooltip -->
+<div class="heatmap-tooltip" id="tooltip"></div>
+
+<!-- Post data from Hugo -->
+<script>
+const postData = {
+  {{- $posts := where site.RegularPages "Type" "in" site.Params.mainSections -}}
+  {{- range $index, $page := $posts -}}
+  {{- if $index }},{{ end }}
+  "{{ $page.Date.Format "2006-01-02" }}": {
+    title: {{ $page.Title | jsonify }},
+    url: "{{ $page.Permalink }}"
+  }
+  {{- end }}
+};
+
+// Group posts by date
+const postsByDate = {};
+{{- range $posts }}
+(function() {
+  const date = "{{ .Date.Format "2006-01-02" }}";
+  if (!postsByDate[date]) {
+    postsByDate[date] = [];
+  }
+  postsByDate[date].push({
+    title: {{ .Title | jsonify }},
+    url: "{{ .Permalink }}"
+  });
+})();
+{{- end }}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tooltip = document.getElementById('tooltip');
+  let currentMonth = new Date();
+  
+  // ===== Heatmap =====
+  function renderHeatmap() {
+    const heatmap = document.getElementById('heatmap');
+    heatmap.innerHTML = '';
+    
+    const today = new Date();
+    const oneYearAgo = new Date(today);
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    
+    // Count posts per date
+    const postCounts = {};
+    Object.keys(postsByDate).forEach(date => {
+      postCounts[date] = postsByDate[date].length;
+    });
+    
+    // Find the first Sunday before oneYearAgo
+    const startDate = new Date(oneYearAgo);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+    
+    // Group by weeks
+    let currentDate = new Date(startDate);
+    let currentWeek = [];
+    let weeks = [];
+    let currentMonthLabel = null;
+    let monthLabels = [];
+    
+    while (currentDate <= today) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      const count = postCounts[dateStr] || 0;
+      
+      // Track month changes for labels
+      const monthStr = currentDate.toLocaleDateString('zh-CN', { month: 'short' });
+      if (monthStr !== currentMonthLabel && currentDate.getDay() === 0) {
+        currentMonthLabel = monthStr;
+        monthLabels.push({ week: weeks.length, label: monthStr });
+      }
+      
+      currentWeek.push({
+        date: dateStr,
+        count: count,
+        posts: postsByDate[dateStr] || []
+      });
+      
+      if (currentDate.getDay() === 6 || currentDate.getTime() === today.getTime()) {
+        weeks.push([...currentWeek]);
+        currentWeek = [];
+      }
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // Render weeks
+    weeks.forEach((week, weekIndex) => {
+      const weekDiv = document.createElement('div');
+      weekDiv.className = 'heatmap-week';
+      
+      week.forEach(day => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'heatmap-day';
+        
+        if (day.count > 0) {
+          const level = Math.min(4, day.count);
+          dayDiv.classList.add(`level-${level}`);
+        }
+        
+        dayDiv.addEventListener('mouseenter', (e) => {
+          const postText = day.count > 0 
+            ? `${day.count} 篇文章` 
+            : '无文章';
+          tooltip.textContent = `${day.date}: ${postText}`;
+          tooltip.classList.add('visible');
+          positionTooltip(e);
+        });
+        
+        dayDiv.addEventListener('mousemove', positionTooltip);
+        dayDiv.addEventListener('mouseleave', () => {
+          tooltip.classList.remove('visible');
+        });
+        
+        if (day.posts.length === 1) {
+          dayDiv.addEventListener('click', () => {
+            window.location.href = day.posts[0].url;
+          });
+        } else if (day.posts.length > 1) {
+          dayDiv.addEventListener('click', () => {
+            const titles = day.posts.map(p => p.title).join('\n');
+            alert(`${day.date} 的文章:\n\n${titles}`);
+          });
+        }
+        
+        weekDiv.appendChild(dayDiv);
+      });
+      
+      heatmap.appendChild(weekDiv);
+    });
+  }
+  
+  function positionTooltip(e) {
+    tooltip.style.left = (e.clientX + 10) + 'px';
+    tooltip.style.top = (e.clientY + 10) + 'px';
+  }
+  
+  // ===== Monthly Calendar =====
+  function renderMonthlyCalendar() {
+    const title = document.getElementById('calendar-title');
+    const daysContainer = document.getElementById('calendar-days');
+    
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    
+    title.textContent = `${year}年 ${month + 1}月`;
+    
+    // First day of month
+    const firstDay = new Date(year, month, 1);
+    // Last day of month
+    const lastDay = new Date(year, month + 1, 0);
+    // Day of week for first day (0 = Sunday)
+    const startDayOfWeek = firstDay.getDay();
+    
+    daysContainer.innerHTML = '';
+    
+    // Previous month days
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day other-month';
+      dayDiv.textContent = prevMonthLastDay - i;
+      daysContainer.appendChild(dayDiv);
+    }
+    
+    // Current month days
+    const today = new Date();
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day';
+      dayDiv.textContent = day;
+      
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      
+      // Check if today
+      if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+        dayDiv.classList.add('today');
+      }
+      
+      // Check if has posts
+      if (postsByDate[dateStr]) {
+        dayDiv.classList.add('has-post');
+        dayDiv.title = postsByDate[dateStr].map(p => p.title).join(', ');
+        
+        if (postsByDate[dateStr].length === 1) {
+          dayDiv.addEventListener('click', () => {
+            window.location.href = postsByDate[dateStr][0].url;
+          });
+        } else {
+          dayDiv.addEventListener('click', () => {
+            const titles = postsByDate[dateStr].map(p => p.title).join('\n');
+            alert(`${dateStr} 的文章:\n\n${titles}`);
+          });
+        }
+      }
+      
+      daysContainer.appendChild(dayDiv);
+    }
+    
+    // Next month days
+    const totalDays = startDayOfWeek + lastDay.getDate();
+    const remainingDays = 42 - totalDays; // 6 rows * 7 days
+    for (let day = 1; day <= remainingDays && totalDays + day <= 42; day++) {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day other-month';
+      dayDiv.textContent = day;
+      daysContainer.appendChild(dayDiv);
+    }
+  }
+  
+  // Month navigation
+  document.getElementById('prev-month').addEventListener('click', () => {
+    currentMonth.setMonth(currentMonth.getMonth() - 1);
+    renderMonthlyCalendar();
+  });
+  
+  document.getElementById('next-month').addEventListener('click', () => {
+    currentMonth.setMonth(currentMonth.getMonth() + 1);
+    renderMonthlyCalendar();
+  });
+  
+  // ===== Stats =====
+  function updateStats() {
+    const allDates = Object.keys(postsByDate);
+    const totalPosts = Object.values(postsByDate).reduce((sum, arr) => sum + arr.length, 0);
+    
+    const today = new Date();
+    const thisYear = today.getFullYear();
+    let postsThisYear = 0;
+    
+    allDates.forEach(date => {
+      if (date.startsWith(thisYear.toString())) {
+        postsThisYear += postsByDate[date].length;
+      }
+    });
+    
+    document.getElementById('total-posts').textContent = totalPosts;
+    document.getElementById('posts-this-year').textContent = postsThisYear;
+    document.getElementById('active-days').textContent = allDates.length;
+  }
+  
+  // Initialize
+  renderHeatmap();
+  renderMonthlyCalendar();
+  updateStats();
+});
+</script>
+
+{{- end -}}

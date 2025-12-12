@@ -1,0 +1,76 @@
+{{- define "main" -}}
+<link rel="stylesheet" href="/css/features.css">
+
+<h1>🔍 搜索文章</h1>
+
+<div class="search-container">
+    <input type="text" id="search-input" placeholder="输入关键词搜索..." autofocus>
+    <div id="search-results"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+<script>
+    let fuse;
+    let searchData = [];
+
+    // Load search index
+    fetch('/index.json')
+        .then(response => response.json())
+        .then(data => {
+            searchData = data;
+            fuse = new Fuse(data, {
+                keys: [
+                    { name: 'title', weight: 0.4 },
+                    { name: 'content', weight: 0.3 },
+                    { name: 'tags', weight: 0.2 },
+                    { name: 'categories', weight: 0.1 }
+                ],
+                includeScore: true,
+                threshold: 0.4,
+                ignoreLocation: true
+            });
+        });
+
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+            searchResults.innerHTML = '<p class="search-hint">请输入至少 2 个字符</p>';
+            return;
+        }
+
+        if (!fuse) {
+            searchResults.innerHTML = '<p class="search-loading">加载中...</p>';
+            return;
+        }
+
+        const results = fuse.search(query);
+
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p class="search-empty">未找到相关文章</p>';
+            return;
+        }
+
+        const html = results.slice(0, 10).map(result => {
+            const item = result.item;
+            const tags = item.tags ? item.tags.map(t => `<span class="search-tag">${t}</span>`).join('') : '';
+            return `
+      <article class="search-result">
+        <a href="${item.permalink}">
+          <h3>${item.title}</h3>
+          <time>${item.date}</time>
+          <p>${item.summary ? item.summary.substring(0, 150) + '...' : ''}</p>
+          <div class="search-tags">${tags}</div>
+        </a>
+      </article>
+    `;
+        }).join('');
+
+        searchResults.innerHTML = `<p class="search-count">找到 ${results.length} 篇相关文章</p>${html}`;
+    });
+</script>
+
+{{- end -}}

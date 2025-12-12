@@ -1,0 +1,49 @@
+[
+    {
+        "name": "个人博客",
+        "description": "使用 Hugo 和 Paper 主题构建的个人技术博客，支持搜索、日历、归档等功能。",
+        "icon": "📝",
+        "tech": [
+            "Hugo",
+            "JavaScript",
+            "CSS"
+        ],
+        "github": "https://github.com/",
+        "demo": "/"
+    },
+    {
+        "name": "待办事项 App",
+        "description": "一个简洁的待办事项管理应用，支持任务分类、优先级标记和提醒功能。",
+        "icon": "✅",
+        "tech": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+        ],
+        "github": "https://github.com/",
+        "demo": ""
+    },
+    {
+        "name": "天气小部件",
+        "description": "实时天气查询小部件，显示当前温度、湿度和未来几天预报。",
+        "icon": "🌤️",
+        "tech": [
+            "Vue.js",
+            "OpenWeather API"
+        ],
+        "github": "https://github.com/",
+        "demo": ""
+    },
+    {
+        "name": "Markdown 编辑器",
+        "description": "在线 Markdown 编辑器，支持实时预览、代码高亮和导出功能。",
+        "icon": "📄",
+        "tech": [
+            "JavaScript",
+            "CodeMirror",
+            "marked.js"
+        ],
+        "github": "https://github.com/",
+        "demo": ""
+    }
+]

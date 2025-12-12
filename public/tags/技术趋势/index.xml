@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>技术趋势 on My New Hugo Site</title>
+    <link>http://localhost:1313/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/</link>
+    <description>Recent content in 技术趋势 on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 15 Jan 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024 年技术趋势展望</title>
+      <link>http://localhost:1313/posts/tech-trends-2024/</link>
+      <pubDate>Mon, 15 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/tech-trends-2024/</guid>
+      <description>&lt;p&gt;新的一年即将到来，让我们盘点一下 2024 年值得关注的技术趋势。&lt;/p&gt;&#xA;&lt;h2 id=&#34;-ai-将更加普及&#34;&gt;🤖 AI 将更加普及&lt;/h2&gt;&#xA;&lt;p&gt;ChatGPT 的出现让 AI 走进了大众视野。2024 年，我们将看到：&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;更多 AI 驱动的开发工具&lt;/li&gt;&#xA;&lt;li&gt;AI 辅助编程成为标配&lt;/li&gt;&#xA;&lt;li&gt;本地大模型的兴起&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;-边缘计算的崛起&#34;&gt;⚡ 边缘计算的崛起&lt;/h2&gt;&#xA;&lt;p&gt;随着 5G 的普及，边缘计算将迎来爆发式增长：&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;更低的延迟&lt;/li&gt;&#xA;&lt;li&gt;更好的隐私保护&lt;/li&gt;&#xA;&lt;li&gt;IoT 设备的智能化&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;-webassembly-的成熟&#34;&gt;🌐 WebAssembly 的成熟&lt;/h2&gt;&#xA;&lt;p&gt;WASM 正在改变 Web 开发的格局：&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;高性能 Web 应用&lt;/li&gt;&#xA;&lt;li&gt;跨平台能力&lt;/li&gt;&#xA;&lt;li&gt;语言多样性&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;-安全性更受重视&#34;&gt;🔐 安全性更受重视&lt;/h2&gt;&#xA;&lt;p&gt;网络安全将成为首要考量：&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;零信任架构&lt;/li&gt;&#xA;&lt;li&gt;隐私计算&lt;/li&gt;&#xA;&lt;li&gt;量子安全加密&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;技术日新月异，保持学习的热情是最重要的！&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

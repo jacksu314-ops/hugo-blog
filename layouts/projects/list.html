@@ -1,0 +1,33 @@
+{{- define "main" -}}
+<link rel="stylesheet" href="/css/features.css">
+
+<h1>💼 项目展示</h1>
+
+<div class="projects-container">
+    <p>这里是我的一些项目和作品集：</p>
+
+    <div class="projects-grid">
+        {{- range site.Data.projects -}}
+        <div class="project-card">
+            <div class="project-icon">{{ .icon }}</div>
+            <h3>{{ .name }}</h3>
+            <p>{{ .description }}</p>
+            <div class="project-tech">
+                {{- range .tech -}}
+                <span>{{ . }}</span>
+                {{- end -}}
+            </div>
+            <div class="project-links">
+                {{- if .github -}}
+                <a href="{{ .github }}" target="_blank">📦 GitHub</a>
+                {{- end -}}
+                {{- if .demo -}}
+                <a href="{{ .demo }}" target="_blank">🔗 Demo</a>
+                {{- end -}}
+            </div>
+        </div>
+        {{- end -}}
+    </div>
+</div>
+
+{{- end -}}

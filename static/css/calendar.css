@@ -1,0 +1,321 @@
+/* Calendar Component Styles */
+
+/* Container */
+.calendar-container {
+  max-width: 100%;
+  margin: 2rem 0;
+}
+
+.calendar-section {
+  margin-bottom: 3rem;
+}
+
+.calendar-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ===== Heatmap Styles ===== */
+.heatmap-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.heatmap {
+  display: flex;
+  gap: 3px;
+}
+
+.heatmap-month {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.heatmap-month-label {
+  font-size: 0.7rem;
+  color: #666;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.dark .heatmap-month-label {
+  color: #999;
+}
+
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.heatmap-day {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #ebedf0;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.dark .heatmap-day {
+  background: #161b22;
+}
+
+.heatmap-day:hover {
+  transform: scale(1.2);
+}
+
+/* Heatmap intensity levels */
+.heatmap-day.level-1 { background: #9be9a8; }
+.heatmap-day.level-2 { background: #40c463; }
+.heatmap-day.level-3 { background: #30a14e; }
+.heatmap-day.level-4 { background: #216e39; }
+
+.dark .heatmap-day.level-1 { background: #0e4429; }
+.dark .heatmap-day.level-2 { background: #006d32; }
+.dark .heatmap-day.level-3 { background: #26a641; }
+.dark .heatmap-day.level-4 { background: #39d353; }
+
+/* Heatmap Legend */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.dark .heatmap-legend {
+  color: #999;
+}
+
+.heatmap-legend-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* Tooltip */
+.heatmap-tooltip {
+  position: fixed;
+  background: #24292f;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.heatmap-tooltip.visible {
+  opacity: 1;
+}
+
+/* ===== Monthly Calendar Styles ===== */
+.monthly-calendar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+}
+
+.dark .monthly-calendar {
+  background: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-nav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.calendar-nav:hover {
+  background: #f0f0f0;
+}
+
+.dark .calendar-nav {
+  color: #999;
+}
+
+.dark .calendar-nav:hover {
+  background: #333;
+}
+
+.calendar-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #666;
+  padding: 0.5rem 0;
+}
+
+.dark .weekday {
+  color: #888;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.day.other-month {
+  color: #ccc;
+}
+
+.dark .day.other-month {
+  color: #444;
+}
+
+.day.has-post {
+  background: #9be9a8;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.dark .day.has-post {
+  background: #26a641;
+  color: white;
+}
+
+.day.has-post:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.day.today {
+  border: 2px solid #0969da;
+}
+
+.dark .day.today {
+  border-color: #58a6ff;
+}
+
+/* Post List Modal/Dropdown */
+.day-posts {
+  position: absolute;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.dark .day-posts {
+  background: #2d2d2d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.day-posts h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.dark .day-posts h4 {
+  color: #999;
+}
+
+.day-posts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.day-posts li {
+  margin: 0.25rem 0;
+}
+
+.day-posts a {
+  color: #0969da;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.day-posts a:hover {
+  text-decoration: underline;
+}
+
+.dark .day-posts a {
+  color: #58a6ff;
+}
+
+/* Stats */
+.calendar-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.dark .calendar-stats {
+  border-top-color: #333;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #26a641;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.dark .stat-label {
+  color: #999;
+}

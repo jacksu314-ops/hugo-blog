@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nano Banana on My New Hugo Site</title>
+    <link>http://localhost:1313/tags/nano-banana/</link>
+    <description>Recent content in Nano Banana on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 03 Jan 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/nano-banana/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nano Banana Design Gallery</title>
+      <link>http://localhost:1313/posts/nano-banana-gallery/</link>
+      <pubDate>Wed, 03 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/nano-banana-gallery/</guid>
+      <description>&lt;p&gt;Exploring the intersection of nanotechnology and organic design with the &amp;ldquo;Nano Banana&amp;rdquo; aesthetic.&lt;/p&gt;&#xA;&lt;h2 id=&#34;concept-art&#34;&gt;Concept Art&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;http://localhost:1313/images/nano-banana-header.png&#34; alt=&#34;Nano Banana Header&#34;&gt;&#xA;&lt;em&gt;A futuristic visualization of the Nano Banana concept.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;deconstruction&#34;&gt;Deconstruction&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;http://localhost:1313/images/nano-banana-art.png&#34; alt=&#34;Nano Banana Art&#34;&gt;&#xA;&lt;em&gt;Artistic representation of molecular reconstruction.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;Designed with AI.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
