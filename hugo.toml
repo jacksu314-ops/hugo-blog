@@ -14,8 +14,12 @@ theme = 'paper'
   priority = 0.5
 
 [params]
+  # Main sections for content (used by calendar, archives, etc.)
+  mainSections = ["posts"]
+  
   # Theme options
   color = 'linen' # linen, wheat, gray, light
+  favicon = 'favicon.png'  # 自定义网站图标
 
   # Profile options
   avatar = 'https://picsum.photos/id/1/200/200' # using a placeholder image

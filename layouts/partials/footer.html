@@ -1,0 +1,21 @@
+<footer class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60">
+    <div class="mr-auto">
+        {{- if site.Copyright -}} {{- site.Copyright -}} {{- else -}} &copy; {{-
+        now.Year }}
+        <a class="link" href="{{- `` | absURL -}}">{{- site.Title -}}</a>
+        {{- end -}}
+    </div>
+
+    <!-- Busuanzi Stats -->
+    <div class="mx-6" style="text-transform: none;">
+        <span id="busuanzi_container_site_pv" style="display:none">
+            🔥 <span id="busuanzi_value_site_pv"></span> 次访问
+        </span>
+        <span id="busuanzi_container_site_uv" style="display:none; margin-left: 10px;">
+            👥 <span id="busuanzi_value_site_uv"></span> 位访客
+        </span>
+    </div>
+
+    <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank">powered by hugo️️</a>️
+    <a class="link" href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">hugo-paper</a>
+</footer>

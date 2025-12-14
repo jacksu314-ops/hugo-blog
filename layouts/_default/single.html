@@ -22,9 +22,19 @@
             <!-- Reading Time -->
             <span class="mx-1">&middot;</span>
             <span>{{- .ReadingTime }} 分钟阅读</span>
+            <span class="mx-1">&middot;</span>
+            <span>约 {{ .WordCount }} 字</span>
+
+            <!-- 不蒜子文章阅读数 -->
+            <span class="mx-1">&middot;</span>
+            <span id="busuanzi_container_page_pv" style="display:inline">
+                阅读 <span id="busuanzi_value_page_pv">-</span> 次
+            </span>
         </div>
         {{- end -}}
     </header>
+
+    {{- partial "code-copy.html" . -}}
 
     <section>{{- .Content -}}</section>
 

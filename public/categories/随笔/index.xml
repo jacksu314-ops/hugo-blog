@@ -6,15 +6,8 @@
     <description>Recent content in 随笔 on My New Hugo Site</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 10 Dec 2025 23:38:28 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jan 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/%E9%9A%8F%E7%AC%94/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Hello World</title>
-      <link>http://localhost:1313/posts/hello-world/</link>
-      <pubDate>Wed, 10 Dec 2025 23:38:28 +0800</pubDate>
-      <guid>http://localhost:1313/posts/hello-world/</guid>
-      <description>&lt;p&gt;欢迎来到我的博客！👋&lt;/p&gt;&#xA;&lt;p&gt;这是我的第一篇文章。在这里，我将分享我的技术学习心得、项目经验和生活感悟。&lt;/p&gt;&#xA;&lt;h2 id=&#34;关于这个博客&#34;&gt;关于这个博客&lt;/h2&gt;&#xA;&lt;p&gt;这个博客使用 &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; 构建，采用简洁美观的 Paper 主题。&lt;/p&gt;&#xA;&lt;p&gt;希望你能在这里找到有价值的内容！&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;感谢阅读 🙏&lt;/p&gt;</description>
-    </item>
     <item>
       <title>2024 年技术趋势展望</title>
       <link>http://localhost:1313/posts/tech-trends-2024/</link>
