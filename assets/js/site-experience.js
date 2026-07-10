@@ -1,4 +1,6 @@
 (() => {
+  const isOwnerMode = document.documentElement.dataset.siteAccess === 'owner';
+
   const safeJson = (element, fallback = []) => {
     if (!element) return fallback;
     try {
@@ -77,17 +79,20 @@
     if (!dashboard || !plans.length) return;
 
     const active = pickActivePlan(plans);
-    const activeWeek = plans.filter((plan) => plan.week === active.week);
-    const stats = calculateStudyStats(activeWeek);
     const today = localDateString(new Date());
-    const label = active.date === today ? '今日计划' : active.date > today ? '下一项计划' : '待完成计划';
+    const label = active.date === today ? '今日计划' : active.date > today ? '下一项计划' : '最近计划';
 
-    dashboard.querySelector('[data-study-rate]').textContent = `${stats.rate}%`;
-    dashboard.querySelector('[data-study-days]').textContent = stats.completedDays;
-    dashboard.querySelector('[data-study-total-days]').textContent = stats.totalDays;
-    dashboard.querySelector('[data-study-minutes]').textContent = stats.completedMinutes;
-    dashboard.querySelector('[data-study-streak]').textContent = stats.streak;
-    dashboard.querySelector('[data-study-progress]').style.width = `${stats.rate}%`;
+    if (isOwnerMode) {
+      const activeWeek = plans.filter((plan) => plan.week === active.week);
+      const stats = calculateStudyStats(activeWeek);
+      dashboard.querySelector('[data-study-rate]').textContent = `${stats.rate}%`;
+      dashboard.querySelector('[data-study-days]').textContent = stats.completedDays;
+      dashboard.querySelector('[data-study-total-days]').textContent = stats.totalDays;
+      dashboard.querySelector('[data-study-minutes]').textContent = stats.completedMinutes;
+      dashboard.querySelector('[data-study-streak]').textContent = stats.streak;
+      dashboard.querySelector('[data-study-progress]').style.width = `${stats.rate}%`;
+    }
+
     dashboard.querySelector('[data-study-next-label]').textContent = `${label} · ${active.date}`;
     dashboard.querySelector('[data-study-next-title]').textContent = `${active.week} ${active.weekday} · ${active.minutes} 分钟`;
     dashboard.querySelector('[data-study-next-detail]').textContent = `托业 ${active.englishMinutes} 分钟，日语 ${active.japaneseMinutes} 分钟`;
@@ -99,6 +104,25 @@
 
     const plan = pickActivePlan(plans);
     const todayMeta = document.getElementById('study-today-meta');
+
+    todayMeta.textContent = `${plan.week} · ${plan.weekday} · ${plan.fitness}`;
+    if (!isOwnerMode) {
+      todayCard.innerHTML = `
+        <div class="study-today-main">
+          <div>
+            <span>${escapeHtml(plan.date)}</span>
+            <h3>${Number(plan.minutes)} 分钟学习目标</h3>
+            <p>托业 ${Number(plan.englishMinutes)}m · 日语 ${Number(plan.japaneseMinutes)}m</p>
+          </div>
+          <strong class="study-public-badge">公开计划</strong>
+        </div>
+        <div class="study-plan-row"><span>托业</span><p>${escapeHtml(plan.english)}</p></div>
+        <div class="study-plan-row"><span>日语</span><p>${escapeHtml(plan.japanese)}</p></div>
+        <div class="study-plan-row"><span>输出</span><p>${escapeHtml(plan.output)}</p></div>
+      `;
+      return;
+    }
+
     const renderStatus = () => {
       const saved = readDay(plan.date);
       const done = Boolean(saved.done || (saved.english && saved.japanese && saved.output));
@@ -111,7 +135,6 @@
     };
 
     const saved = readDay(plan.date);
-    todayMeta.textContent = `${plan.week} · ${plan.weekday} · ${plan.fitness}`;
     todayCard.innerHTML = `
       <div class="study-today-main">
         <div>

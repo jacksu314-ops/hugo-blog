@@ -1,4 +1,8 @@
 {{- $plan := site.Data.study_plan -}}
+{{- $totalMinutes := 0 -}}
+{{- range $plan.dailyPlan -}}
+  {{- $totalMinutes = add $totalMinutes .minutes -}}
+{{- end -}}
 <section class="home-study-dashboard not-prose" data-study-dashboard>
   <div class="home-dashboard-head">
     <div>
@@ -9,27 +13,51 @@
     <a class="home-dashboard-link" href="{{ "study/" | relURL }}">进入学习中心</a>
   </div>
 
-  <div class="home-dashboard-grid" aria-label="本周学习概览">
-    <div class="home-dashboard-stat">
-      <span>本周完成率</span>
-      <strong data-study-rate>0%</strong>
+  <div class="study-owner-only">
+    <div class="home-dashboard-grid" aria-label="个人学习进度">
+      <div class="home-dashboard-stat">
+        <span>本周完成率</span>
+        <strong data-study-rate>0%</strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>完成天数</span>
+        <strong><span data-study-days>0</span>/<span data-study-total-days>0</span></strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>累计分钟</span>
+        <strong data-study-minutes>0</strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>连续打卡</span>
+        <strong><span data-study-streak>0</span> 天</strong>
+      </div>
     </div>
-    <div class="home-dashboard-stat">
-      <span>完成天数</span>
-      <strong><span data-study-days>0</span>/<span data-study-total-days>0</span></strong>
-    </div>
-    <div class="home-dashboard-stat">
-      <span>累计分钟</span>
-      <strong data-study-minutes>0</strong>
-    </div>
-    <div class="home-dashboard-stat">
-      <span>连续打卡</span>
-      <strong><span data-study-streak>0</span> 天</strong>
+
+    <div class="home-dashboard-progress" aria-label="本周学习进度">
+      <span data-study-progress></span>
     </div>
   </div>
 
-  <div class="home-dashboard-progress" aria-label="本周学习进度">
-    <span data-study-progress></span>
+  <div class="home-dashboard-public study-visitor-only">
+    <div class="home-dashboard-grid" aria-label="公开学习计划概览">
+      <div class="home-dashboard-stat">
+        <span>起步周计划</span>
+        <strong>{{ len $plan.dailyPlan }} 天</strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>计划时长</span>
+        <strong>{{ $totalMinutes }}m</strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>托业目标</span>
+        <strong>600+</strong>
+      </div>
+      <div class="home-dashboard-stat">
+        <span>日语目标</span>
+        <strong>N3</strong>
+      </div>
+    </div>
+    <p class="study-access-copy">个人打卡、笔记和周复盘不在公开页面展示。</p>
   </div>
 
   <div class="home-dashboard-next">
@@ -38,7 +66,8 @@
       <h3 data-study-next-title>正在读取学习计划...</h3>
       <p data-study-next-detail></p>
     </div>
-    <a href="{{ "study/#weekly-review" | relURL }}">填写周复盘</a>
+    <a class="study-owner-only" href="{{ "study/#weekly-review" | relURL }}">填写周复盘</a>
+    <a class="study-visitor-only" href="{{ "study/" | relURL }}">查看学习计划</a>
   </div>
 </section>
 <script type="application/json" class="study-plan-data">{{ $plan.dailyPlan | jsonify | safeHTML }}</script>

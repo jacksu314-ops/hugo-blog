@@ -6,6 +6,14 @@
         <h1>{{ $plan.title }}</h1>
         <p>{{ $plan.summary }}</p>
         <div class="study-period">{{ $plan.period }}</div>
+        <div class="study-access-banner study-owner-only">
+            <strong>个人编辑模式</strong>
+            <span>打卡、笔记和复盘仅保存在当前浏览器。</span>
+        </div>
+        <div class="study-access-banner study-visitor-only">
+            <strong>公开浏览模式</strong>
+            <span>学习计划可查看，个人打卡与复盘不公开。</span>
+        </div>
     </header>
 
     <section class="study-target-grid" aria-label="学习目标">
@@ -28,7 +36,7 @@
         <div class="study-today-card" id="study-today-card"></div>
     </section>
 
-    <section class="study-section weekly-review" id="weekly-review" data-weekly-review>
+    <section class="study-section weekly-review study-owner-only" id="weekly-review" data-weekly-review>
         <div class="section-heading">
             <div>
                 <p class="section-eyebrow">Weekly Review</p>
@@ -58,6 +66,12 @@
                 <textarea rows="5" data-review-field="next" placeholder="减少什么、增加什么、下周最重要的一件事..."></textarea>
             </label>
         </div>
+    </section>
+
+    <section class="study-section study-private-notice study-visitor-only">
+        <p class="section-eyebrow">Private Notes</p>
+        <h2>周复盘为个人记录</h2>
+        <p>本周成果、问题与下周调整只在博主的个人编辑环境中保存，公开页面不提供填写入口。</p>
     </section>
 
     <section class="study-section">

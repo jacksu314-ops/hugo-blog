@@ -1809,3 +1809,133 @@ body > .relative.flex.flex-col.grow > footer {
         transition: none;
     }
 }
+
+/* Personal study data is editable only in the local owner environment. */
+.study-visitor-only {
+    display: none !important;
+}
+
+html[data-site-access="visitor"] .study-owner-only {
+    display: none !important;
+}
+
+html[data-site-access="visitor"] .study-visitor-only {
+    display: block !important;
+}
+
+html[data-site-access="visitor"] a.study-visitor-only {
+    display: inline-flex !important;
+}
+
+.study-access-banner {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.7rem;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 0.8rem;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 8px;
+    background: rgba(37, 99, 235, 0.07);
+    color: #475569;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 0.55rem 0.7rem;
+}
+
+html[data-site-access="owner"] .study-access-banner.study-owner-only {
+    display: flex !important;
+}
+
+html[data-site-access="visitor"] .study-access-banner.study-visitor-only {
+    display: flex !important;
+}
+
+.study-access-banner strong {
+    color: #1d4ed8;
+}
+
+.dark .study-access-banner {
+    border-color: rgba(96, 165, 250, 0.22);
+    background: rgba(96, 165, 250, 0.1);
+    color: #cbd5e1;
+}
+
+.home-dashboard-public {
+    margin-top: 1rem;
+}
+
+.study-access-copy {
+    margin: 0.75rem 0 0;
+    border-left: 3px solid #10b981;
+    color: #64748b;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    padding-left: 0.7rem;
+}
+
+.study-plan-row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.7rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    padding-top: 0.7rem;
+}
+
+.study-plan-row > span {
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.study-plan-row p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.65;
+}
+
+.dark .study-plan-row p {
+    color: #cbd5e1;
+}
+
+.study-public-badge {
+    background: rgba(37, 99, 235, 0.1) !important;
+    color: #1d4ed8 !important;
+}
+
+.study-private-notice {
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-left: 4px solid #10b981;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.58);
+    padding: 1rem;
+}
+
+.dark .study-private-notice {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #34d399;
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.study-private-notice h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.study-private-notice p:last-child {
+    margin: 0.45rem 0 0;
+    color: #64748b;
+    line-height: 1.65;
+}
+
+html[data-site-access="visitor"] [data-study-day-status] {
+    display: none;
+}
+
+@media (max-width: 520px) {
+    .study-plan-row {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+    }
+}
