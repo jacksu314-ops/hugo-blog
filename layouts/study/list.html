@@ -1,0 +1,147 @@
+{{- define "main" -}}
+{{- $plan := site.Data.study_plan -}}
+<section class="study-page">
+    <header class="study-hero">
+        <p class="section-eyebrow">Daily Learning</p>
+        <h1>{{ $plan.title }}</h1>
+        <p>{{ $plan.summary }}</p>
+        <div class="study-period">{{ $plan.period }}</div>
+    </header>
+
+    <section class="study-target-grid" aria-label="学习目标">
+        {{- range $plan.targets -}}
+        <article class="study-target-card">
+            <span>{{ .label }}</span>
+            <strong>{{ .value }}</strong>
+        </article>
+        {{- end -}}
+    </section>
+
+    <section class="study-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Today</p>
+                <h2>今日学习</h2>
+            </div>
+            <div class="study-today-meta" id="study-today-meta">自动匹配计划日期</div>
+        </div>
+        <div class="study-today-card" id="study-today-card"></div>
+    </section>
+
+    <section class="study-section weekly-review" id="weekly-review" data-weekly-review>
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Weekly Review</p>
+                <h2>本周复盘</h2>
+            </div>
+            <div class="weekly-review-status" data-review-status>输入内容会自动保存在当前浏览器</div>
+        </div>
+
+        <div class="weekly-summary-grid" aria-label="本周学习统计">
+            <article><span>完成率</span><strong data-week-rate>0%</strong></article>
+            <article><span>完成天数</span><strong data-week-days>0/0</strong></article>
+            <article><span>完成分钟</span><strong data-week-minutes>0/0</strong></article>
+            <article><span>连续打卡</span><strong data-week-streak>0 天</strong></article>
+        </div>
+
+        <div class="weekly-review-grid">
+            <label>
+                <span>本周做得好的地方</span>
+                <textarea rows="5" data-review-field="wins" placeholder="完成了什么、哪些方法有效、哪一点值得保持..."></textarea>
+            </label>
+            <label>
+                <span>问题与阻力</span>
+                <textarea rows="5" data-review-field="blocks" placeholder="错题集中在哪里、时间为何不够、状态受到什么影响..."></textarea>
+            </label>
+            <label>
+                <span>下周调整</span>
+                <textarea rows="5" data-review-field="next" placeholder="减少什么、增加什么、下周最重要的一件事..."></textarea>
+            </label>
+        </div>
+    </section>
+
+    <section class="study-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Rhythm</p>
+                <h2>每日节奏</h2>
+            </div>
+        </div>
+        <div class="study-time-grid">
+            {{- range $plan.timeBlocks -}}
+            <article class="study-time-card">
+                <span>{{ .time }}</span>
+                <h3>{{ .name }}</h3>
+                <p>{{ .detail }}</p>
+                <strong>{{ .minutes }}m</strong>
+            </article>
+            {{- end -}}
+        </div>
+    </section>
+
+    <section class="study-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Rules</p>
+                <h2>执行规则</h2>
+            </div>
+        </div>
+        <div class="study-rule-list">
+            {{- range $plan.rules -}}
+            <div class="study-rule-item">{{ . }}</div>
+            {{- end -}}
+        </div>
+    </section>
+
+    <section class="study-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Starter Week</p>
+                <h2>起步周计划</h2>
+            </div>
+        </div>
+        <div class="study-day-list">
+            {{- range $plan.dailyPlan -}}
+            <article class="study-day-card">
+                <div class="study-day-head">
+                    <div>
+                        <span>{{ .week }} · {{ .weekday }}</span>
+                        <h3>{{ .date }}</h3>
+                    </div>
+                    <div class="study-day-state">
+                        <span data-study-day-status="{{ .date }}">未打卡</span>
+                        <strong>{{ .minutes }}m</strong>
+                    </div>
+                </div>
+                <div class="study-day-body">
+                    <p><b>托业：</b>{{ .english }}</p>
+                    <p><b>日语：</b>{{ .japanese }}</p>
+                    <p><b>输出：</b>{{ .output }}</p>
+                </div>
+            </article>
+            {{- end -}}
+        </div>
+    </section>
+
+    <section class="study-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Roadmap</p>
+                <h2>月度路线</h2>
+            </div>
+        </div>
+        <div class="study-roadmap">
+            {{- range $plan.monthlyRoadmap -}}
+            <article class="study-roadmap-card">
+                <span>{{ .month }}</span>
+                <h3>托业 {{ .toeic }} · 日语 {{ .japanese }}</h3>
+                <p>{{ .focus }}</p>
+                <strong>{{ .minimum }}</strong>
+            </article>
+            {{- end -}}
+        </div>
+    </section>
+</section>
+
+<script type="application/json" class="study-plan-data">{{ $plan.dailyPlan | jsonify | safeHTML }}</script>
+{{- end -}}

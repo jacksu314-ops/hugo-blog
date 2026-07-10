@@ -1,49 +1,64 @@
 [
-    {
-        "name": "个人博客",
-        "description": "使用 Hugo 和 Paper 主题构建的个人技术博客，支持搜索、日历、归档等功能。",
-        "icon": "📝",
-        "tech": [
-            "Hugo",
-            "JavaScript",
-            "CSS"
-        ],
-        "github": "https://github.com/",
-        "demo": "/"
-    },
-    {
-        "name": "待办事项 App",
-        "description": "一个简洁的待办事项管理应用，支持任务分类、优先级标记和提醒功能。",
-        "icon": "✅",
-        "tech": [
-            "React",
-            "TypeScript",
-            "Tailwind"
-        ],
-        "github": "https://github.com/",
-        "demo": ""
-    },
-    {
-        "name": "天气小部件",
-        "description": "实时天气查询小部件，显示当前温度、湿度和未来几天预报。",
-        "icon": "🌤️",
-        "tech": [
-            "Vue.js",
-            "OpenWeather API"
-        ],
-        "github": "https://github.com/",
-        "demo": ""
-    },
-    {
-        "name": "Markdown 编辑器",
-        "description": "在线 Markdown 编辑器，支持实时预览、代码高亮和导出功能。",
-        "icon": "📄",
-        "tech": [
-            "JavaScript",
-            "CodeMirror",
-            "marked.js"
-        ],
-        "github": "https://github.com/",
-        "demo": ""
-    }
+  {
+    "name": "Hugo 技术博客",
+    "description": "围绕技术写作、学习记录和个人作品构建的长期维护型网站，覆盖内容组织、搜索、日历、讨论与响应式体验。",
+    "icon": "📝",
+    "status": "持续维护",
+    "role": "独立设计与开发",
+    "image": "projects/hugo-blog/featured.png",
+    "tech": ["Hugo", "Blowfish", "JavaScript", "CSS"],
+    "highlights": ["学习仪表盘与周复盘", "文章热力图和全文搜索", "Giscus 公开讨论"],
+    "github": "https://github.com/jacksu666/hugo-blog",
+    "demo": "",
+    "detail": "projects/hugo-blog/"
+  },
+  {
+    "name": "开发者工具集",
+    "description": "整理日常开发中高频、重复的处理流程，通过脚本化方式减少机械操作，并为后续自动化工作流保留扩展空间。",
+    "icon": "🧰",
+    "status": "持续整理",
+    "role": "脚本设计与维护",
+    "image": "projects/dev-tools/featured.png",
+    "tech": ["Python", "Automation", "CLI"],
+    "highlights": ["批量文件处理", "代码格式化流程", "可重复执行的命令工具"],
+    "github": "https://github.com/jacksu666/dev-tools",
+    "demo": "",
+    "detail": "projects/dev-tools/"
+  },
+  {
+    "name": "待办事项 App",
+    "description": "面向在职学习场景的任务管理概念，计划把任务分类、优先级、每日复盘与学习打卡放进同一套工作流。",
+    "icon": "✓",
+    "status": "概念规划",
+    "role": "产品与交互设计",
+    "tech": ["React", "TypeScript", "Tailwind"],
+    "highlights": ["学习与工作双视图", "优先级和延期缓冲", "周复盘汇总"],
+    "github": "",
+    "demo": "",
+    "detail": "projects/todo-app/"
+  },
+  {
+    "name": "天气小部件",
+    "description": "适合桌面和移动端快速查看的天气信息组件，重点探索信息密度、城市切换和未来天气趋势的表达。",
+    "icon": "☀",
+    "status": "概念规划",
+    "role": "前端与数据展示",
+    "tech": ["Vue.js", "OpenWeather API", "CSS"],
+    "highlights": ["当前天气摘要", "短期趋势展示", "异常与加载状态"],
+    "github": "",
+    "demo": "",
+    "detail": "projects/weather-widget/"
+  },
+  {
+    "name": "Markdown 编辑器",
+    "description": "以写作专注度为核心的在线编辑器概念，计划支持实时预览、代码高亮和常用格式导出。",
+    "icon": "M↓",
+    "status": "概念规划",
+    "role": "编辑体验设计",
+    "tech": ["JavaScript", "CodeMirror", "marked.js"],
+    "highlights": ["双栏与专注模式", "代码块高亮", "本地草稿保存"],
+    "github": "",
+    "demo": "",
+    "detail": "projects/markdown-editor/"
+  }
 ]

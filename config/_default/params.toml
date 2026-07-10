@@ -1,0 +1,92 @@
+# 主题参数配置
+
+# 配色方案 (可选: blowfish, ocean, forest, neon, terminal 等)
+colorScheme = "blowfish"
+
+# 外观设置
+defaultAppearance = "light"  # light 或 dark
+autoSwitchAppearance = true  # 跟随系统
+defaultBackgroundImage = "img/background.png"  # 全局背景图
+
+# 首页布局 (可选: page, profile, hero, card, background)
+[homepage]
+  layout = "background"
+  homepageImage = "img/background.png"  # 背景图片
+  showRecent = true
+  recentLimit = 5
+  cardView = true                        # 卡片视图
+  cardViewScreenWidth = true             # 约束宽度
+  showSummary = false                    # 不显示简介
+
+# 文章设置
+[article]
+  showDate = true
+  showDateUpdated = false
+  showAuthor = true
+  showBreadcrumbs = true
+  showDraftLabel = true
+  showEdit = false
+  showHeadingAnchors = true
+  showPagination = true
+  showReadingTime = true
+  showTableOfContents = true
+  showTaxonomies = true
+  showWordCount = true
+  showComments = true
+
+# 列表页设置
+[list]
+  showBreadcrumbs = false
+  showSummary = false
+  showTableOfContents = false
+  groupByYear = true
+
+# 网站地图设置
+[sitemap]
+  excludedKinds = ["taxonomy", "term"]
+
+# 分类法设置
+[taxonomy]
+  showTermCount = true
+
+# 术语页设置
+[term]
+  showHero = false
+  groupByYear = false
+
+# 搜索
+[search]
+  type = "fuse"
+
+# Firebase (可选，如不需要可删除)
+# [firebase]
+#   apiKey = ""
+#   authDomain = ""
+#   projectId = ""
+#   storageBucket = ""
+#   messagingSenderId = ""
+#   appId = ""
+#   measurementId = ""
+
+# 验证
+[verification]
+  # google = ""
+  # bing = ""
+
+# Fathom Analytics (可选)
+# [fathomAnalytics]
+#   site = ""
+
+# Giscus 评论
+[giscus]
+  repo = "jacksu666/hugo-blog"
+  repoId = "R_kgDOQnbK7g"
+  category = "Announcements"
+  categoryId = "DIC_kwDOQnbK7s4Czsu7"
+  mapping = "pathname"
+  strict = false
+  enableReactions = true
+  emitMetadata = false
+  inputPosition = "bottom"
+  theme = "preferred_color_scheme"
+  lang = "zh-CN"

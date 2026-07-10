@@ -1,0 +1,44 @@
+{{- $plan := site.Data.study_plan -}}
+<section class="home-study-dashboard not-prose" data-study-dashboard>
+  <div class="home-dashboard-head">
+    <div>
+      <p class="section-eyebrow">Learning Dashboard</p>
+      <h2>学习仪表盘</h2>
+      <p>把托业与日语计划变成每天都能推进的一小步。</p>
+    </div>
+    <a class="home-dashboard-link" href="{{ "study/" | relURL }}">进入学习中心</a>
+  </div>
+
+  <div class="home-dashboard-grid" aria-label="本周学习概览">
+    <div class="home-dashboard-stat">
+      <span>本周完成率</span>
+      <strong data-study-rate>0%</strong>
+    </div>
+    <div class="home-dashboard-stat">
+      <span>完成天数</span>
+      <strong><span data-study-days>0</span>/<span data-study-total-days>0</span></strong>
+    </div>
+    <div class="home-dashboard-stat">
+      <span>累计分钟</span>
+      <strong data-study-minutes>0</strong>
+    </div>
+    <div class="home-dashboard-stat">
+      <span>连续打卡</span>
+      <strong><span data-study-streak>0</span> 天</strong>
+    </div>
+  </div>
+
+  <div class="home-dashboard-progress" aria-label="本周学习进度">
+    <span data-study-progress></span>
+  </div>
+
+  <div class="home-dashboard-next">
+    <div>
+      <span data-study-next-label>下一项计划</span>
+      <h3 data-study-next-title>正在读取学习计划...</h3>
+      <p data-study-next-detail></p>
+    </div>
+    <a href="{{ "study/#weekly-review" | relURL }}">填写周复盘</a>
+  </div>
+</section>
+<script type="application/json" class="study-plan-data">{{ $plan.dailyPlan | jsonify | safeHTML }}</script>

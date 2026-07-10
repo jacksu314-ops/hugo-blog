@@ -1,0 +1,45 @@
+{{- define "main" -}}
+{{- $logs := site.Data.changelog -}}
+<section class="changelog-page">
+    <header class="changelog-hero">
+        <p class="section-eyebrow">Site Log</p>
+        <h1>修改日志与讨论区</h1>
+        <p>这里记录网站做过的重要调整。以后较大的页面、功能、内容结构修改，都会同步写入这条时间线。</p>
+    </header>
+
+    <section class="changelog-board">
+        {{- range $logs -}}
+        <article class="changelog-entry">
+            <div class="changelog-entry-meta">
+                <span>{{ .version }}</span>
+                <time datetime="{{ .date }}">{{ .date }}</time>
+            </div>
+            <div class="changelog-entry-body">
+                <div class="changelog-entry-title">
+                    <span>{{ .type }}</span>
+                    <h2>{{ .title }}</h2>
+                </div>
+                <p>{{ .summary }}</p>
+                <ul>
+                    {{- range .changes -}}
+                    <li>{{ . }}</li>
+                    {{- end -}}
+                </ul>
+            </div>
+        </article>
+        {{- end -}}
+    </section>
+
+    <section class="discussion-panel public-discussion-intro">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">Discussion</p>
+                <h2>网站建议与版本讨论</h2>
+            </div>
+        </div>
+        <p>讨论内容会公开同步到 GitHub Discussions。可以直接提出页面建议、报告显示问题，或讨论下一版准备加入的功能。</p>
+    </section>
+
+    {{ partial "comments.html" . }}
+</section>
+{{- end -}}

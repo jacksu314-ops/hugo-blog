@@ -1,0 +1,185 @@
+{
+  "title": "托业 420→600+ / 日语 N3 在职学习计划",
+  "period": "2026-07-13 至 2027-06",
+  "summary": "以在职作息为前提，把托业提分和日语 N3 目标拆成每日任务、每周验收和月度路线。",
+  "targets": [
+    {
+      "label": "托业当前",
+      "value": "420"
+    },
+    {
+      "label": "托业目标",
+      "value": "600+"
+    },
+    {
+      "label": "日语当前",
+      "value": "初级入门"
+    },
+    {
+      "label": "日语目标",
+      "value": "N3"
+    }
+  ],
+  "rules": [
+    "工作日以晨间记忆、通勤听力、晚间主学习块为核心。",
+    "每周托业 8.5 小时、日语 8.5 小时，总计约 17 小时。",
+    "不熬夜补课，当日未完成优先移到周末缓冲。",
+    "每周日验收，正确率不达标时减少新内容 20% 到 30%。"
+  ],
+  "timeBlocks": [
+    {
+      "time": "07:25–07:50",
+      "name": "晨间记忆",
+      "detail": "词汇、汉字或假名复习",
+      "minutes": 25
+    },
+    {
+      "time": "通勤 20m",
+      "name": "轻量听力",
+      "detail": "托业 Part 1/2 或日语短对话轮换",
+      "minutes": 20
+    },
+    {
+      "time": "20:10–21:00",
+      "name": "主学习块",
+      "detail": "只学一门，避免任务切换过碎",
+      "minutes": 50
+    },
+    {
+      "time": "22:20–22:30",
+      "name": "闪卡复习",
+      "detail": "当天错词和关键句复盘",
+      "minutes": 10
+    }
+  ],
+  "monthlyRoadmap": [
+    {
+      "month": "2026-07",
+      "toeic": "450",
+      "japanese": "N5①",
+      "focus": "托业 Part 1/2 与 Part 5 基础；日语初级课 2–8。",
+      "minimum": "学习 ≥55h"
+    },
+    {
+      "month": "2026-08",
+      "toeic": "480",
+      "japanese": "N5②",
+      "focus": "高频词累计 700；日语初级课 9–16。",
+      "minimum": "学习 ≥60h"
+    },
+    {
+      "month": "2026-09",
+      "toeic": "510",
+      "japanese": "N5完成",
+      "focus": "托业 Part 3 入门；完成 N5 主要语法。",
+      "minimum": "学习 ≥65h"
+    },
+    {
+      "month": "2026-10",
+      "toeic": "540",
+      "japanese": "N4①",
+      "focus": "托业 Part 3/4 精听；N4 体系启动。",
+      "minimum": "学习 ≥68h"
+    },
+    {
+      "month": "2026-11",
+      "toeic": "570",
+      "japanese": "N4②",
+      "focus": "商务场景词汇、双篇阅读入门；N4 约 50%。",
+      "minimum": "模拟 ≥560"
+    },
+    {
+      "month": "2026-12",
+      "toeic": "600",
+      "japanese": "N4③",
+      "focus": "托业整套限时与弱项语法；N4 听力专项。",
+      "minimum": "连续 2 次 ≥600"
+    }
+  ],
+  "dailyPlan": [
+    {
+      "week": "第1周",
+      "date": "2026-07-13",
+      "weekday": "周一",
+      "fitness": "训练1",
+      "minutes": 105,
+      "englishMinutes": 55,
+      "japaneseMinutes": 50,
+      "english": "新词15个；Part 1图片题10题；词性基础；Part 5练习10题",
+      "japanese": "五十音随机复习；教材第2课词汇；本课语法与例句朗读",
+      "output": "英语：15词卡+10题答案；日语：假名随机识别"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-14",
+      "weekday": "周二",
+      "fitness": "训练2",
+      "minutes": 105,
+      "englishMinutes": 50,
+      "japaneseMinutes": 55,
+      "english": "新词15个；Part 2问句类型；精听/跟读5句；Part 2练习15题",
+      "japanese": "片假名易混辨析；第2课会话跟读；写5个替换句",
+      "output": "英语：5句跟读录音；日语：5句朗读"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-15",
+      "weekday": "周三",
+      "fitness": "休息",
+      "minutes": 150,
+      "englishMinutes": 75,
+      "japaneseMinutes": 75,
+      "english": "新词15个；基本句型与主谓一致；Part 5练习20题并分类错因",
+      "japanese": "教材第3课；助词は/が/を基础；新词20个；听力10分钟",
+      "output": "英语：错题分类表；日语：20词+5例句"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-16",
+      "weekday": "周四",
+      "fitness": "训练1",
+      "minutes": 105,
+      "englishMinutes": 55,
+      "japaneseMinutes": 50,
+      "english": "新词15个；Part 1/2影子跟读；Part 5练习20题",
+      "japanese": "第3课练习；用本周语法写10句；朗读课文3遍",
+      "output": "英语：20题正确率；日语：10句作文"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-17",
+      "weekday": "周五",
+      "fitness": "训练2",
+      "minutes": 105,
+      "englishMinutes": 50,
+      "japaneseMinutes": 55,
+      "english": "本周词汇抽测60词；Part 2练习15题；听写5句",
+      "japanese": "第2–3课词汇抽测；听写10个单词；复习片假名",
+      "output": "英语：词汇抽测率；日语：词汇/假名正确率"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-18",
+      "weekday": "周六",
+      "fitness": "休息",
+      "minutes": 240,
+      "englishMinutes": 120,
+      "japaneseMinutes": 120,
+      "english": "词性与句型复习45m；Part 1/2分项测试45m；错题与词汇复习30m",
+      "japanese": "第2–3课综合：教材60m；练习30m；会话跟读30m",
+      "output": "英语：分项正确率；日语：教材练习完成"
+    },
+    {
+      "week": "第1周",
+      "date": "2026-07-19",
+      "weekday": "周日",
+      "fitness": "训练1",
+      "minutes": 210,
+      "englishMinutes": 105,
+      "japaneseMinutes": 105,
+      "english": "50题周测：Part 1/2+Part 5；逐题复盘并记录三类主要错误",
+      "japanese": "周测：五十音随机、词汇、语法、短听力；订正并口头复述",
+      "output": "英语：周测正确率；日语：周测五项成绩"
+    }
+  ]
+}

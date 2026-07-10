@@ -1,33 +1,62 @@
 {{- define "main" -}}
-<link rel="stylesheet" href="/css/features.css">
 
-<h1>💼 项目展示</h1>
+<section class="projects-page">
+    <header class="projects-hero">
+        <p class="projects-eyebrow">Portfolio</p>
+        <h1>项目展示</h1>
+        <p>这里整理了一些我的项目和作品集，包含博客、工具、组件和实验性质的小应用。</p>
+    </header>
 
-<div class="projects-container">
-    <p>这里是我的一些项目和作品集：</p>
+    <div class="projects-grid" aria-label="项目列表">
+        {{- range $index, $project := site.Data.projects -}}
+        <article class="project-card">
+            {{- if $project.image -}}
+            <a class="project-cover" href="{{ $project.detail | relURL }}" aria-label="查看 {{ $project.name }} 项目详情">
+                <img src="{{ $project.image | relURL }}" alt="{{ $project.name }} 项目截图" loading="lazy">
+            </a>
+            {{- end -}}
+            <div class="project-card-header">
+                <div class="project-icon" aria-hidden="true">{{ $project.icon }}</div>
+                <div>
+                    <p class="project-kicker">Project {{ printf "%02d" (add $index 1) }}</p>
+                    <h2>{{ $project.name }}</h2>
+                </div>
+                <span class="project-status">{{ $project.status }}</span>
+            </div>
 
-    <div class="projects-grid">
-        {{- range site.Data.projects -}}
-        <div class="project-card">
-            <div class="project-icon">{{ .icon }}</div>
-            <h3>{{ .name }}</h3>
-            <p>{{ .description }}</p>
-            <div class="project-tech">
-                {{- range .tech -}}
+            <p class="project-description">{{ $project.description }}</p>
+
+            <div class="project-role">
+                <span>负责范围</span>
+                <strong>{{ $project.role }}</strong>
+            </div>
+
+            <ul class="project-highlights" aria-label="项目亮点">
+                {{- range $project.highlights -}}
+                <li>{{ . }}</li>
+                {{- end -}}
+            </ul>
+
+            <div class="project-tech" aria-label="技术栈">
+                {{- range $project.tech -}}
                 <span>{{ . }}</span>
                 {{- end -}}
             </div>
+
             <div class="project-links">
-                {{- if .github -}}
-                <a href="{{ .github }}" target="_blank">📦 GitHub</a>
+                {{- if $project.detail -}}
+                <a class="project-primary-link" href="{{ $project.detail | relURL }}">查看案例</a>
                 {{- end -}}
-                {{- if .demo -}}
-                <a href="{{ .demo }}" target="_blank">🔗 Demo</a>
+                {{- if $project.github -}}
+                <a href="{{ $project.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+                {{- end -}}
+                {{- if $project.demo -}}
+                <a href="{{ $project.demo | relURL }}">在线预览</a>
                 {{- end -}}
             </div>
-        </div>
+        </article>
         {{- end -}}
     </div>
-</div>
+</section>
 
 {{- end -}}

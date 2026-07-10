@@ -1,0 +1,36 @@
+{{- $giscus := site.Params.giscus -}}
+{{- if and $giscus.repo $giscus.repoId $giscus.category $giscus.categoryId -}}
+<section class="giscus-panel" aria-label="公开讨论区">
+  <div class="giscus-panel-head">
+    <p class="section-eyebrow">Discussion</p>
+    <h2>公开讨论</h2>
+    <p>使用 GitHub 账号参与讨论、提出建议，或留下对本页内容的反馈。</p>
+  </div>
+  <div class="giscus"></div>
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="{{ $giscus.repo }}"
+    data-repo-id="{{ $giscus.repoId }}"
+    data-category="{{ $giscus.category }}"
+    data-category-id="{{ $giscus.categoryId }}"
+    data-mapping="{{ $giscus.mapping | default "pathname" }}"
+    data-strict="{{ if $giscus.strict }}1{{ else }}0{{ end }}"
+    data-reactions-enabled="{{ if $giscus.enableReactions }}1{{ else }}0{{ end }}"
+    data-emit-metadata="{{ if $giscus.emitMetadata }}1{{ else }}0{{ end }}"
+    data-input-position="{{ $giscus.inputPosition | default "bottom" }}"
+    data-theme="{{ $giscus.theme | default "preferred_color_scheme" }}"
+    data-lang="{{ $giscus.lang | default "zh-CN" }}"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async>
+  </script>
+</section>
+{{- else -}}
+<section class="giscus-panel giscus-panel-empty">
+  <div class="giscus-panel-head">
+    <p class="section-eyebrow">Discussion</p>
+    <h2>公开讨论</h2>
+    <p>评论服务尚未完成配置，请稍后再来。</p>
+  </div>
+</section>
+{{- end -}}

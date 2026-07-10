@@ -1,0 +1,19 @@
+# 中文语言配置
+languageCode = "zh-cn"
+languageName = "简体中文"
+weight = 1
+title = "My Hugo Blog"
+
+# 日期格式
+[params]
+  dateFormat = "2006年1月2日"
+
+# 作者信息
+[params.author]
+  name = "Jack Su"
+  image = "img/author.jpg"
+  headline = "Sharing thoughts and code"
+  bio = "技术博主，分享代码与思考"
+  links = [
+    { github = "https://github.com/jacksu666" }
+  ]

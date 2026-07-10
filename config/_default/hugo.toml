@@ -1,0 +1,37 @@
+# Hugo 基础配置
+baseURL = 'https://jacksu666.github.io/hugo-blog/'
+languageCode = 'zh-cn'
+defaultContentLanguage = 'zh-cn'
+theme = 'blowfish'
+title = 'My Hugo Blog'
+
+# 启用某些功能
+enableRobotsTXT = true
+enableEmoji = true
+enableGitInfo = false
+
+# 站点地图
+[sitemap]
+  changefreq = 'weekly'
+  priority = 0.5
+
+# 输出配置
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+# 标记配置
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+  [markup.highlight]
+    noClasses = false
+
+# 将处理后的图片缓存放到构建缓存目录，避免写入源码目录。
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'

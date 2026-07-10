@@ -1,5 +1,0 @@
-﻿{{- $index := slice -}}
-{{- range where site.RegularPages "Section" "posts" -}}
-  {{- $index = $index | append (dict "title" .Title "date" (.Date.Format "2006-01-02") "permalink" .Permalink "summary" (plainify .Summary | truncate 150) "tags" .Params.tags "categories" .Params.categories) -}}
-{{- end -}}
-{{- $index | jsonify -}}

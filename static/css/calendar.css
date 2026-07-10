@@ -16,15 +16,69 @@
   font-weight: 600;
 }
 
+.calendar-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-section-heading h2 {
+  margin-bottom: 0;
+}
+
+.heatmap-year-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #57606a;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.dark .heatmap-year-picker {
+  color: #9ca3af;
+}
+
+.heatmap-year-picker select {
+  min-width: 94px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #24292f;
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.heatmap-year-picker select:focus {
+  border-color: #0969da;
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.14);
+}
+
+.dark .heatmap-year-picker select {
+  border-color: #30363d;
+  background: rgba(22, 27, 34, 0.92);
+  color: #f0f6fc;
+}
+
 /* ===== Heatmap Styles ===== */
 .heatmap-wrapper {
+  max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 1rem;
 }
 
 .heatmap {
+  width: max-content;
+  min-width: 100%;
   display: flex;
   gap: 3px;
+  padding-right: 2px;
 }
 
 .heatmap-month {
@@ -57,6 +111,11 @@
   background: #ebedf0;
   cursor: pointer;
   transition: transform 0.1s ease;
+}
+
+.heatmap-day.muted {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .dark .heatmap-day {
@@ -145,6 +204,8 @@
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  width: 100%;
   max-width: 400px;
 }
 
@@ -161,12 +222,18 @@
 }
 
 .calendar-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
+  line-height: 1;
   color: #666;
-  padding: 0.5rem;
+  padding: 0;
   border-radius: 50%;
   transition: background 0.2s ease;
 }
@@ -383,9 +450,16 @@
     font-size: 1.25rem;
   }
 
+  .calendar-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   /* Heatmap mobile */
   .heatmap-wrapper {
     -webkit-overflow-scrolling: touch;
+    margin-right: -0.25rem;
+    padding-right: 0.25rem;
   }
 
   .heatmap-day {

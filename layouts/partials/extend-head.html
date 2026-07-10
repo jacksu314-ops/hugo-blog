@@ -1,0 +1,6 @@
+{{- /* Inject custom animations JS using Hugo Pipes for minification and fingerprinting */ -}}
+{{- $js := resources.Get "js/animations.js" -}}
+{{- if $js -}}
+{{- $jsBundled := $js | resources.Minify | resources.Fingerprint -}}
+<script defer src="{{ $jsBundled.RelPermalink }}" integrity="{{ $jsBundled.Data.Integrity }}"></script>
+{{- end -}}

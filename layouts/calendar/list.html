@@ -1,12 +1,18 @@
 ﻿{{- define "main" -}}
-<link rel="stylesheet" href="/css/calendar.css">
+<link rel="stylesheet" href="{{ "css/calendar.css" | relURL }}">
 
 <h1> 文章日历</h1>
 
 <div class="calendar-container">
     <!-- Heatmap Section -->
     <section class="calendar-section">
-        <h2> 发文热力图</h2>
+        <div class="calendar-section-heading">
+            <h2> 发文热力图</h2>
+            <label class="heatmap-year-picker">
+                <span>年份</span>
+                <select id="heatmap-year"></select>
+            </label>
+        </div>
         <div class="heatmap-wrapper">
             <div class="heatmap" id="heatmap"></div>
         </div>
@@ -26,9 +32,9 @@
         <h2> 月历视图</h2>
         <div class="monthly-calendar">
             <div class="calendar-header">
-                <button class="calendar-nav" id="prev-month"></button>
+                <button class="calendar-nav" id="prev-month" aria-label="上个月" type="button">&lt;</button>
                 <h3 class="calendar-title" id="calendar-title"></h3>
-                <button class="calendar-nav" id="next-month"></button>
+                <button class="calendar-nav" id="next-month" aria-label="下个月" type="button">&gt;</button>
             </div>
             <div class="weekdays">
                 <div class="weekday">日</div>
@@ -53,7 +59,7 @@
             </div>
             <div class="stat">
                 <div class="stat-value" id="posts-this-year">0</div>
-                <div class="stat-label">今年发文</div>
+                <div class="stat-label">当前年份发文</div>
             </div>
             <div class="stat">
                 <div class="stat-value" id="active-days">0</div>
@@ -71,13 +77,13 @@
     const postsByDate = {};
     {{- range where site.RegularPages "Section" "in" site.Params.mainSections }}
     (function() {
-        const dateStr = {{ .Date.Format "2006-01-02" | jsonify }};
+        const dateStr = {{ printf "%q" (.Date.Format "2006-01-02") | safeJS }};
         if (!postsByDate[dateStr]) {
             postsByDate[dateStr] = [];
         }
         postsByDate[dateStr].push({
-            title: {{ .Title | jsonify }},
-            url: {{ .Permalink | jsonify }}
+            title: {{ printf "%q" .Title | safeJS }},
+            url: {{ printf "%q" .RelPermalink | safeJS }}
         });
     })();
     {{- end }}
@@ -87,19 +93,61 @@
     document.addEventListener('DOMContentLoaded', function () {
         const tooltip = document.getElementById('tooltip');
         let currentMonth = new Date();
+        let selectedHeatmapYear = getDefaultHeatmapYear();
 
         // Birthday: November 27 (month-1 because JavaScript months are 0-indexed)
         const BIRTHDAY_MONTH = 10; // November (0-indexed)
         const BIRTHDAY_DAY = 27;
 
         // ===== Heatmap =====
+        function getPostYears() {
+            const years = Object.keys(postsByDate)
+                .map(date => Number(date.slice(0, 4)))
+                .filter(Number.isFinite);
+            return [...new Set(years)].sort((a, b) => b - a);
+        }
+
+        function getDefaultHeatmapYear() {
+            const years = getPostYears();
+            return years.length ? years[0] : new Date().getFullYear();
+        }
+
+        function getDefaultCalendarMonth() {
+            const dates = Object.keys(postsByDate).sort().reverse();
+            if (!dates.length) {
+                return new Date();
+            }
+
+            const [year, month] = dates[0].split('-').map(Number);
+            return new Date(year, month - 1, 1);
+        }
+
+        function setupHeatmapYearPicker() {
+            const picker = document.getElementById('heatmap-year');
+            const years = getPostYears();
+            const currentYear = new Date().getFullYear();
+            const options = years.length ? years : [currentYear];
+
+            picker.innerHTML = '';
+            options.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year}年`;
+                option.selected = year === selectedHeatmapYear;
+                picker.appendChild(option);
+            });
+
+            picker.addEventListener('change', () => {
+                selectedHeatmapYear = Number(picker.value);
+                renderHeatmap();
+                updateStats();
+            });
+        }
+
         function renderHeatmap() {
             const heatmap = document.getElementById('heatmap');
             heatmap.innerHTML = '';
-
-            const today = new Date();
-            const twoYearsAgo = new Date(today);
-            twoYearsAgo.setFullYear(today.getFullYear() - 2);
+            heatmap.setAttribute('aria-label', `${selectedHeatmapYear} 年发文热力图`);
 
             // Count posts per date
             const postCounts = {};
@@ -107,26 +155,32 @@
                 postCounts[date] = postsByDate[date].length;
             });
 
-            // Find the first Sunday before twoYearsAgo
-            const startDate = new Date(twoYearsAgo);
+            // Render the selected calendar year, aligned to week columns.
+            const yearStart = new Date(selectedHeatmapYear, 0, 1);
+            const yearEnd = new Date(selectedHeatmapYear, 11, 31);
+            const startDate = new Date(yearStart);
             startDate.setDate(startDate.getDate() - startDate.getDay());
+            const endDate = new Date(yearEnd);
+            endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
 
             // Group by weeks
             let currentDate = new Date(startDate);
             let currentWeek = [];
             let weeks = [];
 
-            while (currentDate <= today) {
-                const dateStr = currentDate.toISOString().split('T')[0];
+            while (currentDate <= endDate) {
+                const dateStr = formatLocalDate(currentDate);
                 const count = postCounts[dateStr] || 0;
+                const isInSelectedYear = currentDate.getFullYear() === selectedHeatmapYear;
 
                 currentWeek.push({
                     date: dateStr,
                     count: count,
-                    posts: postsByDate[dateStr] || []
+                    posts: postsByDate[dateStr] || [],
+                    muted: !isInSelectedYear
                 });
 
-                if (currentDate.getDay() === 6 || currentDate.getTime() === today.getTime()) {
+                if (currentDate.getDay() === 6) {
                     weeks.push([...currentWeek]);
                     currentWeek = [];
                 }
@@ -142,8 +196,13 @@
                 week.forEach(day => {
                     const dayDiv = document.createElement('div');
                     dayDiv.className = 'heatmap-day';
+                    dayDiv.setAttribute('aria-label', `${day.date}: ${day.count} 篇文章`);
 
-                    if (day.count > 0) {
+                    if (day.muted) {
+                        dayDiv.classList.add('muted');
+                    }
+
+                    if (!day.muted && day.count > 0) {
                         const level = Math.min(4, day.count);
                         dayDiv.classList.add(`level-${level}`);
                     }
@@ -162,11 +221,11 @@
                         tooltip.classList.remove('visible');
                     });
 
-                    if (day.posts.length === 1) {
+                    if (!day.muted && day.posts.length === 1) {
                         dayDiv.addEventListener('click', () => {
                             window.location.href = day.posts[0].url;
                         });
-                    } else if (day.posts.length > 1) {
+                    } else if (!day.muted && day.posts.length > 1) {
                         dayDiv.addEventListener('click', () => {
                             const titles = day.posts.map(p => p.title).join('\n');
                             alert(`${day.date} 的文章:\n\n${titles}`);
@@ -178,6 +237,13 @@
 
                 heatmap.appendChild(weekDiv);
             });
+        }
+
+        function formatLocalDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function positionTooltip(e) {
@@ -282,23 +348,22 @@
         function updateStats() {
             const allDates = Object.keys(postsByDate);
             const totalPosts = Object.values(postsByDate).reduce((sum, arr) => sum + arr.length, 0);
-
-            const today = new Date();
-            const thisYear = today.getFullYear();
-            let postsThisYear = 0;
+            let postsInSelectedYear = 0;
 
             allDates.forEach(date => {
-                if (date.startsWith(thisYear.toString())) {
-                    postsThisYear += postsByDate[date].length;
+                if (date.startsWith(selectedHeatmapYear.toString())) {
+                    postsInSelectedYear += postsByDate[date].length;
                 }
             });
 
             document.getElementById('total-posts').textContent = totalPosts;
-            document.getElementById('posts-this-year').textContent = postsThisYear;
+            document.getElementById('posts-this-year').textContent = postsInSelectedYear;
             document.getElementById('active-days').textContent = allDates.length;
         }
 
         // Initialize
+        currentMonth = getDefaultCalendarMonth();
+        setupHeatmapYearPicker();
         renderHeatmap();
         renderMonthlyCalendar();
         updateStats();

@@ -1,0 +1,66 @@
+# 主导航菜单
+[[main]]
+  identifier = "posts"
+  name = "文章"
+  pageRef = "posts"
+  weight = 10
+
+[[main]]
+  identifier = "study"
+  name = "学习"
+  pageRef = "study"
+  weight = 20
+
+[[main]]
+  identifier = "projects"
+  name = "项目"
+  pageRef = "projects"
+  weight = 30
+
+[[main]]
+  identifier = "changelog"
+  name = "日志"
+  pageRef = "changelog"
+  weight = 40
+
+[[main]]
+  identifier = "archives"
+  name = "归档"
+  pageRef = "archives"
+  weight = 50
+
+[[main]]
+  identifier = "tags"
+  name = "标签"
+  pageRef = "tags"
+  weight = 60
+
+[[main]]
+  identifier = "categories"
+  name = "分类"
+  pageRef = "categories"
+  weight = 70
+
+[[main]]
+  identifier = "calendar"
+  name = "日历"
+  pageRef = "calendar"
+  weight = 80
+
+[[main]]
+  identifier = "search"
+  name = "搜索"
+  pageRef = "search"
+  weight = 90
+
+[[main]]
+  identifier = "about"
+  name = "关于"
+  pageRef = "about"
+  weight = 100
+
+# 页脚菜单
+[[footer]]
+  name = "GitHub"
+  url = "https://github.com/jacksu666"
+  weight = 10

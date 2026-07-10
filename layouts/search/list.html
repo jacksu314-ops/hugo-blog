@@ -1,5 +1,4 @@
 {{- define "main" -}}
-<link rel="stylesheet" href="/css/features.css">
 
 <h1>🔍 搜索文章</h1>
 
@@ -14,7 +13,7 @@
     let searchData = [];
 
     // Load search index
-    fetch('/index.json')
+    fetch('{{ "index.json" | relURL }}')
         .then(response => response.json())
         .then(data => {
             searchData = data;

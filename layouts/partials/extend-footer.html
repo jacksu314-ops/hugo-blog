@@ -1,0 +1,25 @@
+{{- $explorePages := where site.RegularPages "Section" "in" (slice "posts" "projects") -}}
+{{- $exploreItems := slice -}}
+{{- range $explorePages -}}
+  {{- $exploreItems = $exploreItems | append (dict "title" .Title "url" .RelPermalink "section" .Section) -}}
+{{- end -}}
+
+<div class="reading-progress-track" id="reading-progress-track" aria-hidden="true">
+  <span id="reading-progress-value"></span>
+</div>
+
+<div class="site-tool-rail print:hidden" aria-label="快捷工具">
+  <button type="button" id="random-explore" class="site-tool-button" aria-label="随机探索一篇内容" data-tooltip="随机探索">
+    {{ partial "icon.html" "wand-magic-sparkles" }}
+  </button>
+  <button type="button" id="back-to-top" class="site-tool-button site-tool-back" aria-label="返回顶部" data-tooltip="返回顶部">
+    {{ partial "icon.html" "chevron-down" }}
+  </button>
+</div>
+
+<script type="application/json" id="site-explore-data">{{ $exploreItems | jsonify | safeHTML }}</script>
+{{- $experience := resources.Get "js/site-experience.js" -}}
+{{- if $experience -}}
+  {{- $experience = $experience | resources.Minify | resources.Fingerprint -}}
+  <script defer src="{{ $experience.RelPermalink }}" integrity="{{ $experience.Data.Integrity }}"></script>
+{{- end -}}
