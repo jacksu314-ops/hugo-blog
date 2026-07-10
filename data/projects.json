@@ -8,7 +8,7 @@
     "image": "projects/hugo-blog/featured.png",
     "tech": ["Hugo", "Blowfish", "JavaScript", "CSS"],
     "highlights": ["学习仪表盘与周复盘", "文章热力图和全文搜索", "Giscus 公开讨论"],
-    "github": "https://github.com/jacksu666/hugo-blog",
+    "github": "https://github.com/jacksu314-ops/hugo-blog",
     "demo": "",
     "detail": "projects/hugo-blog/"
   },
@@ -21,7 +21,7 @@
     "image": "projects/dev-tools/featured.png",
     "tech": ["Python", "Automation", "CLI"],
     "highlights": ["批量文件处理", "代码格式化流程", "可重复执行的命令工具"],
-    "github": "https://github.com/jacksu666/dev-tools",
+    "github": "",
     "demo": "",
     "detail": "projects/dev-tools/"
   },

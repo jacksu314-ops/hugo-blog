@@ -50,8 +50,8 @@ heroStyle: "background"
 
 ## 📫 联系我
 
-- **GitHub**: [jacksu666](https://github.com/jacksu666)
-- **Email**: jacksu666@example.com
+- **GitHub**: [jacksu314-ops](https://github.com/jacksu314-ops)
+- **Email**: jacksu314-ops@example.com
 
 欢迎通过以上方式与我交流！
 

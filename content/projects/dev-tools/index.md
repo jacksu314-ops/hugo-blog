@@ -3,7 +3,7 @@ title: "开发者工具集"
 description: "把日常重复操作整理成可复用脚本和命令工具"
 date: 2025-11-15
 tags: ["工具", "Python", "自动化"]
-externalUrl: "https://github.com/jacksu666/dev-tools"
+externalUrl: ""
 showDate: true
 showReadingTime: true
 showAuthor: false

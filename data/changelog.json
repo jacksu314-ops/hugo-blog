@@ -1,12 +1,26 @@
 [
   {
+    "version": "v0.8",
+    "date": "2026-07-10",
+    "title": "修正 GitHub 账号与部署地址",
+    "type": "部署修正",
+    "summary": "将网站使用的 GitHub 账号从旧账号统一迁移到 jacksu314-ops，避免代码、Pages 和个人链接继续指向错误位置。",
+    "changes": [
+      "Git 远程仓库调整为 jacksu314-ops/hugo-blog。",
+      "GitHub Pages 地址调整为 https://jacksu314-ops.github.io/hugo-blog/。",
+      "作者主页、页脚和项目仓库链接统一切换到新账号。",
+      "移除无法确认存在的 dev-tools 仓库链接。",
+      "清除旧仓库的 Giscus ID，等待新仓库启用 Discussions 后重新配置。"
+    ]
+  },
+  {
     "version": "v0.7",
     "date": "2026-07-10",
     "title": "迁移到 GitHub Pages 自动部署",
     "type": "部署升级",
     "summary": "移除已失效的自定义域名和 VPS 上传流程，改为由 GitHub Actions 自动构建并发布项目站点。",
     "changes": [
-      "站点地址调整为 https://jacksu666.github.io/hugo-blog/。",
+      "站点地址调整为 https://jacksu314-ops.github.io/hugo-blog/。",
       "部署工作流改用 GitHub Pages 官方 artifact 与 deploy actions，不再依赖服务器 SSH 密钥。",
       "固定 Hugo Extended 0.148.2，并将图片处理缓存放入构建缓存目录。",
       "修正 404、搜索、日历、学习仪表盘、项目卡片和文章图片在 /hugo-blog/ 子路径下的资源地址。",

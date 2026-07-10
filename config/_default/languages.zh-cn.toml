@@ -15,5 +15,5 @@ title = "My Hugo Blog"
   headline = "Sharing thoughts and code"
   bio = "技术博主，分享代码与思考"
   links = [
-    { github = "https://github.com/jacksu666" }
+    { github = "https://github.com/jacksu314-ops" }
   ]

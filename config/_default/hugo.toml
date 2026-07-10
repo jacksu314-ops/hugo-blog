@@ -1,5 +1,5 @@
 # Hugo 基础配置
-baseURL = 'https://jacksu666.github.io/hugo-blog/'
+baseURL = 'https://jacksu314-ops.github.io/hugo-blog/'
 languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
 theme = 'blowfish'

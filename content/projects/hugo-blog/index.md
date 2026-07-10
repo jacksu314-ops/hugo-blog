@@ -3,7 +3,7 @@ title: "Hugo 技术博客"
 description: "一个持续迭代的个人技术博客与学习成长空间"
 date: 2025-12-10
 tags: ["Hugo", "Blowfish", "博客"]
-externalUrl: "https://github.com/jacksu666/hugo-blog"
+externalUrl: "https://github.com/jacksu314-ops/hugo-blog"
 showDate: true
 showReadingTime: true
 showAuthor: false

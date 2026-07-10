@@ -79,10 +79,10 @@ defaultBackgroundImage = "img/background.png"  # 全局背景图
 
 # Giscus 评论
 [giscus]
-  repo = "jacksu666/hugo-blog"
-  repoId = "R_kgDOQnbK7g"
+  repo = "jacksu314-ops/hugo-blog"
+  repoId = ""
   category = "Announcements"
-  categoryId = "DIC_kwDOQnbK7s4Czsu7"
+  categoryId = ""
   mapping = "pathname"
   strict = false
   enableReactions = true
