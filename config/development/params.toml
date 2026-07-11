@@ -1,0 +1,5 @@
+# Public browser credentials for local Hugo development only. Production uses
+# GitHub Actions repository variables. Never place a secret/service_role key here.
+[supabase]
+  url = "https://uubtivwrbcpthgsnvprj.supabase.co"
+  publishableKey = "sb_publishable_PyeJAx-qfVOeN-d7Zg_pHQ_gjfB1Gl1"

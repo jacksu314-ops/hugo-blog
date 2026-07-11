@@ -92,6 +92,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tooltip = document.getElementById('tooltip');
+        // Backdrop filters on #main-content create a containing block for fixed
+        // descendants. Move the tooltip to body so client coordinates stay exact.
+        document.body.appendChild(tooltip);
         let currentMonth = new Date();
         let selectedHeatmapYear = getDefaultHeatmapYear();
 
@@ -247,8 +250,21 @@
         }
 
         function positionTooltip(e) {
-            tooltip.style.left = (e.clientX + 10) + 'px';
-            tooltip.style.top = (e.clientY + 10) + 'px';
+            const gap = 12;
+            const margin = 8;
+            const bounds = tooltip.getBoundingClientRect();
+            let left = e.clientX + gap;
+            let top = e.clientY + gap;
+
+            if (left + bounds.width > window.innerWidth - margin) {
+                left = e.clientX - bounds.width - gap;
+            }
+            if (top + bounds.height > window.innerHeight - margin) {
+                top = e.clientY - bounds.height - gap;
+            }
+
+            tooltip.style.left = `${Math.max(margin, left)}px`;
+            tooltip.style.top = `${Math.max(margin, top)}px`;
         }
 
         // ===== Monthly Calendar =====

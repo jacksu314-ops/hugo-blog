@@ -2,6 +2,9 @@
   let siteAuth = { configured: false, isAdmin: false, user: null, client: null };
   const studyDays = new Map();
   const weeklyReviews = new Map();
+  let studyPlans = [];
+  let studyRenderGeneration = 0;
+  let appliedAuthKey = '';
 
   const safeJson = (element, fallback = []) => {
     if (!element) return fallback;
@@ -32,6 +35,8 @@
   };
 
   const loadCloudStudyData = async () => {
+    studyDays.clear();
+    weeklyReviews.clear();
     if (!siteAuth.isAdmin || !siteAuth.client || !siteAuth.user) return;
     const [daysResult, reviewsResult] = await Promise.all([
       siteAuth.client.from('study_days').select('plan_date,english,japanese,output,note,updated_at').eq('owner_id', siteAuth.user.id),
@@ -311,12 +316,30 @@
     window.addEventListener('scroll', toggleTopButton, { passive: true });
   };
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    siteAuth = await window.siteAuthReady;
+  const authKey = (auth) => `${auth?.user?.id || 'visitor'}:${auth?.role || (auth?.isAdmin ? 'admin' : 'visitor')}`;
+
+  const applyStudyAuth = async (nextAuth, force = false) => {
+    const nextKey = authKey(nextAuth);
+    if (!force && nextKey === appliedAuthKey) return;
+
+    const generation = ++studyRenderGeneration;
+    siteAuth = nextAuth || { configured: false, isAdmin: false, user: null, client: null };
     await loadCloudStudyData();
-    const plans = safeJson(document.querySelector('.study-plan-data'));
-    renderHomeDashboard(plans);
-    renderStudyPage(plans);
+    if (generation !== studyRenderGeneration) return;
+
+    appliedAuthKey = nextKey;
+    renderHomeDashboard(studyPlans);
+    renderStudyPage(studyPlans);
+  };
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    studyPlans = safeJson(document.querySelector('.study-plan-data'));
+    window.addEventListener('site-auth-change', (event) => {
+      void applyStudyAuth(event.detail);
+    });
+
+    const initialAuth = await window.siteAuthReady;
+    await applyStudyAuth(initialAuth);
     setupReadingExperience();
     setupSiteTools();
   });

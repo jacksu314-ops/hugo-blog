@@ -60,6 +60,8 @@ Gmail 应用密码不得提交到仓库，也不得写入 GitHub Pages 构建变
 
 这两个值用于浏览器客户端，可以公开；绝不能使用 `service_role` key。推送或手动重跑 Pages 工作流后生效。
 
+本地 `hugo server` 默认使用 `config/development/params.toml` 中同一组公开浏览器配置，因此重启本地服务后仍可恢复登录会话。该文件只能包含 Project URL 和 publishable key，不能写入 GitHub Client Secret、SMTP 密码或 `service_role` key。
+
 ## 6. 验收
 
 1. 未登录访问文章、项目和学习页，确认可阅读但无私人输入框。
