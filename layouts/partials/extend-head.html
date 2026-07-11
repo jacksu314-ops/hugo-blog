@@ -1,11 +1,8 @@
 {{- /* Inject custom animations JS using Hugo Pipes for minification and fingerprinting */ -}}
 <script>
   (() => {
-    const localHosts = ['localhost', '127.0.0.1', '::1'];
-    const forceVisitor = new URLSearchParams(window.location.search).has('visitor-preview');
-    document.documentElement.dataset.siteAccess = localHosts.includes(window.location.hostname) && !forceVisitor
-      ? 'owner'
-      : 'visitor';
+    document.documentElement.dataset.siteAccess = 'visitor';
+    window.siteAuthReady = new Promise((resolve) => { window.resolveSiteAuth = resolve; });
   })();
 </script>
 {{- $js := resources.Get "js/animations.js" -}}

@@ -77,16 +77,8 @@ defaultBackgroundImage = "img/background.png"  # 全局背景图
 # [fathomAnalytics]
 #   site = ""
 
-# Giscus 评论
-[giscus]
-  repo = "jacksu314-ops/hugo-blog"
-  repoId = ""
-  category = "Announcements"
-  categoryId = ""
-  mapping = "pathname"
-  strict = false
-  enableReactions = true
-  emitMetadata = false
-  inputPosition = "bottom"
-  theme = "preferred_color_scheme"
-  lang = "zh-CN"
+# Public browser credentials only. Production values are injected with GitHub
+# repository variables; never place a service_role key here.
+[supabase]
+  url = ""
+  publishableKey = ""

@@ -1,0 +1,79 @@
+{{- define "main" -}}
+<section class="account-page" data-account-page>
+  <header class="account-hero">
+    <p class="section-eyebrow">Account</p>
+    <h1>登录与账户</h1>
+    <p>博客内容公开阅读。验证邮箱后可以参与讨论，管理员登录后可以同步个人学习记录。</p>
+  </header>
+
+  <div class="account-notice" data-auth-notice role="status">正在检查登录状态...</div>
+
+  <section class="account-panel" data-auth-signed-out hidden>
+    <div class="account-panel-head">
+      <div>
+        <p class="section-eyebrow">Email OTP</p>
+        <h2>邮箱验证码</h2>
+      </div>
+      <span>普通用户</span>
+    </div>
+    <form class="auth-form" data-email-request-form>
+      <label for="auth-email">邮箱地址</label>
+      <div class="auth-inline-control">
+        <input id="auth-email" name="email" type="email" autocomplete="email" required placeholder="name@example.com">
+        <button type="submit" data-send-code>发送验证码</button>
+      </div>
+      <p>新邮箱会自动注册。验证码仅用于登录，不需要设置密码。</p>
+    </form>
+    <form class="auth-form" data-email-verify-form hidden>
+      <label for="auth-token">邮件验证码</label>
+      <div class="auth-inline-control">
+        <input id="auth-token" name="token" type="text" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="8" required placeholder="输入验证码">
+        <button type="submit" data-verify-code>验证并登录</button>
+      </div>
+      <button type="button" class="auth-text-button" data-change-email>更换邮箱</button>
+    </form>
+    <div class="account-divider"><span>管理员入口</span></div>
+    <button type="button" class="auth-github-button" data-github-login>使用 GitHub 登录</button>
+    <p class="account-help">首次使用 GitHub 登录后，需要在 Supabase 中手动将该用户授权为管理员。</p>
+  </section>
+
+  <section class="account-panel" data-auth-signed-in hidden>
+    <div class="account-panel-head">
+      <div>
+        <p class="section-eyebrow">Profile</p>
+        <h2 data-account-heading>我的账户</h2>
+      </div>
+      <span data-account-role>普通用户</span>
+    </div>
+    <dl class="account-details">
+      <div><dt>邮箱</dt><dd data-account-email></dd></div>
+      <div><dt>用户 ID</dt><dd data-account-id></dd></div>
+    </dl>
+    <form class="auth-form" data-profile-form>
+      <label for="profile-name">公开昵称</label>
+      <div class="auth-inline-control">
+        <input id="profile-name" name="displayName" type="text" minlength="2" maxlength="40" required>
+        <button type="submit">保存昵称</button>
+      </div>
+    </form>
+    <div class="account-actions">
+      <a href="{{ "changelog/" | relURL }}">进入讨论区</a>
+      <button type="button" class="discussion-secondary" data-sign-out>退出登录</button>
+    </div>
+  </section>
+
+  <section class="account-panel migration-panel study-owner-only" data-study-migration hidden>
+    <div class="account-panel-head">
+      <div>
+        <p class="section-eyebrow">Data Migration</p>
+        <h2>导入本地学习记录</h2>
+      </div>
+      <span>仅管理员</span>
+    </div>
+    <p data-migration-summary>正在检查当前浏览器中的旧记录...</p>
+    <div class="account-actions">
+      <button type="button" data-migrate-study>导入到云端</button>
+    </div>
+  </section>
+</section>
+{{- end -}}

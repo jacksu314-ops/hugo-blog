@@ -18,8 +18,25 @@
 </div>
 
 <script type="application/json" id="site-explore-data">{{ $exploreItems | jsonify | safeHTML }}</script>
+{{- $supabase := site.Params.supabase | default dict -}}
+<script type="application/json" id="site-auth-config">{{ dict
+  "url" ($supabase.url | default "")
+  "publishableKey" ($supabase.publishableKey | default "")
+  "accountUrl" ("account/" | relURL)
+  "callbackUrl" ("auth/callback/" | absURL)
+  | jsonify | safeHTML }}</script>
+{{- $auth := resources.Get "js/auth.js" -}}
+{{- if $auth -}}
+  {{- $auth = $auth | resources.Minify | resources.Fingerprint -}}
+  <script type="module" src="{{ $auth.RelPermalink }}" integrity="{{ $auth.Data.Integrity }}"></script>
+{{- end -}}
 {{- $experience := resources.Get "js/site-experience.js" -}}
 {{- if $experience -}}
   {{- $experience = $experience | resources.Minify | resources.Fingerprint -}}
   <script defer src="{{ $experience.RelPermalink }}" integrity="{{ $experience.Data.Integrity }}"></script>
+{{- end -}}
+{{- $discussion := resources.Get "js/discussion.js" -}}
+{{- if $discussion -}}
+  {{- $discussion = $discussion | resources.Minify | resources.Fingerprint -}}
+  <script type="module" src="{{ $discussion.RelPermalink }}" integrity="{{ $discussion.Data.Integrity }}"></script>
 {{- end -}}

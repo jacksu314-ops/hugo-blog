@@ -59,6 +59,12 @@
   pageRef = "about"
   weight = 100
 
+[[main]]
+  identifier = "account"
+  name = "登录"
+  pageRef = "account"
+  weight = 110
+
 # 页脚菜单
 [[footer]]
   name = "GitHub"

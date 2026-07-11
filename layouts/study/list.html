@@ -7,8 +7,8 @@
         <p>{{ $plan.summary }}</p>
         <div class="study-period">{{ $plan.period }}</div>
         <div class="study-access-banner study-owner-only">
-            <strong>个人编辑模式</strong>
-            <span>打卡、笔记和复盘仅保存在当前浏览器。</span>
+            <strong>管理员模式</strong>
+            <span>打卡、笔记和复盘通过 Supabase 加密会话同步。</span>
         </div>
         <div class="study-access-banner study-visitor-only">
             <strong>公开浏览模式</strong>
@@ -42,7 +42,7 @@
                 <p class="section-eyebrow">Weekly Review</p>
                 <h2>本周复盘</h2>
             </div>
-            <div class="weekly-review-status" data-review-status>输入内容会自动保存在当前浏览器</div>
+            <div class="weekly-review-status" data-review-status>输入内容会自动同步到云端</div>
         </div>
 
         <div class="weekly-summary-grid" aria-label="本周学习统计">
@@ -71,7 +71,7 @@
     <section class="study-section study-private-notice study-visitor-only">
         <p class="section-eyebrow">Private Notes</p>
         <h2>周复盘为个人记录</h2>
-        <p>本周成果、问题与下周调整只在博主的个人编辑环境中保存，公开页面不提供填写入口。</p>
+        <p>本周成果、问题与下周调整只对经过身份验证的管理员开放，公开页面不提供填写入口。</p>
     </section>
 
     <section class="study-section">

@@ -25,6 +25,8 @@ jobs:
     env:
       HUGO_VERSION: 0.148.2
       TZ: Asia/Shanghai
+      HUGO_PARAMS_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      HUGO_PARAMS_SUPABASE_PUBLISHABLEKEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7

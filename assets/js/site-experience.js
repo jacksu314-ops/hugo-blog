@@ -1,5 +1,7 @@
 (() => {
-  const isOwnerMode = document.documentElement.dataset.siteAccess === 'owner';
+  let siteAuth = { configured: false, isAdmin: false, user: null, client: null };
+  const studyDays = new Map();
+  const weeklyReviews = new Map();
 
   const safeJson = (element, fallback = []) => {
     if (!element) return fallback;
@@ -26,10 +28,22 @@
   };
 
   const readDay = (date) => {
-    try {
-      return JSON.parse(localStorage.getItem(`study-check-${date}`) || '{}');
-    } catch (_error) {
-      return {};
+    return studyDays.get(date) || {};
+  };
+
+  const loadCloudStudyData = async () => {
+    if (!siteAuth.isAdmin || !siteAuth.client || !siteAuth.user) return;
+    const [daysResult, reviewsResult] = await Promise.all([
+      siteAuth.client.from('study_days').select('plan_date,english,japanese,output,note,updated_at').eq('owner_id', siteAuth.user.id),
+      siteAuth.client.from('weekly_reviews').select('week_key,wins,blocks,next_steps,updated_at').eq('owner_id', siteAuth.user.id)
+    ]);
+    if (!daysResult.error) {
+      studyDays.clear();
+      (daysResult.data || []).forEach((row) => studyDays.set(row.plan_date, row));
+    }
+    if (!reviewsResult.error) {
+      weeklyReviews.clear();
+      (reviewsResult.data || []).forEach((row) => weeklyReviews.set(row.week_key, row));
     }
   };
 
@@ -82,7 +96,7 @@
     const today = localDateString(new Date());
     const label = active.date === today ? '今日计划' : active.date > today ? '下一项计划' : '最近计划';
 
-    if (isOwnerMode) {
+    if (siteAuth.isAdmin) {
       const activeWeek = plans.filter((plan) => plan.week === active.week);
       const stats = calculateStudyStats(activeWeek);
       dashboard.querySelector('[data-study-rate]').textContent = `${stats.rate}%`;
@@ -106,7 +120,7 @@
     const todayMeta = document.getElementById('study-today-meta');
 
     todayMeta.textContent = `${plan.week} · ${plan.weekday} · ${plan.fitness}`;
-    if (!isOwnerMode) {
+    if (!siteAuth.isAdmin) {
       todayCard.innerHTML = `
         <div class="study-today-main">
           <div>
@@ -160,7 +174,7 @@
     `;
     todayCard.querySelector('#study-note').value = saved.note || '';
 
-    const save = () => {
+    const save = async () => {
       const next = {
         english: todayCard.querySelector('[data-study-check="english"]').checked,
         japanese: todayCard.querySelector('[data-study-check="japanese"]').checked,
@@ -168,12 +182,29 @@
         note: todayCard.querySelector('#study-note').value
       };
       next.done = next.english && next.japanese && next.output;
-      localStorage.setItem(`study-check-${plan.date}`, JSON.stringify(next));
+      studyDays.set(plan.date, next);
       renderStatus();
+      const { error } = await siteAuth.client.from('study_days').upsert({
+        owner_id: siteAuth.user.id,
+        plan_date: plan.date,
+        english: next.english,
+        japanese: next.japanese,
+        output: next.output,
+        note: next.note.slice(0, 5000),
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'owner_id,plan_date' });
+      const status = todayCard.querySelector('[data-save-status]');
+      if (status) status.textContent = error ? `保存失败：${error.message}` : '已同步到云端';
     };
 
     todayCard.querySelectorAll('[data-study-check]').forEach((input) => input.addEventListener('change', save));
-    todayCard.querySelector('#study-note').addEventListener('input', save);
+    let noteTimer = null;
+    todayCard.querySelector('#study-note').insertAdjacentHTML('afterend', '<small data-save-status>修改后自动同步到云端</small>');
+    todayCard.querySelector('#study-note').addEventListener('input', () => {
+      window.clearTimeout(noteTimer);
+      todayCard.querySelector('[data-save-status]').textContent = '正在等待保存...';
+      noteTimer = window.setTimeout(save, 650);
+    });
     renderStatus();
     setupWeeklyReview(plan.week);
   };
@@ -202,23 +233,25 @@
   const setupWeeklyReview = (week) => {
     const form = document.querySelector('[data-weekly-review]');
     if (!form) return;
-    const key = `study-week-review-${week}`;
-    let saved = {};
-    try {
-      saved = JSON.parse(localStorage.getItem(key) || '{}');
-    } catch (_error) {
-      saved = {};
-    }
+    const saved = weeklyReviews.get(week) || {};
     const status = form.querySelector('[data-review-status]');
+    let saveTimer = null;
     form.querySelectorAll('[data-review-field]').forEach((field) => {
-      field.value = saved[field.dataset.reviewField] || '';
+      const cloudKey = field.dataset.reviewField === 'next' ? 'next_steps' : field.dataset.reviewField;
+      field.value = saved[cloudKey] || '';
       field.addEventListener('input', () => {
-        const next = {};
-        form.querySelectorAll('[data-review-field]').forEach((input) => {
-          next[input.dataset.reviewField] = input.value;
-        });
-        localStorage.setItem(key, JSON.stringify(next));
-        status.textContent = '已自动保存';
+        window.clearTimeout(saveTimer);
+        status.textContent = '正在等待保存...';
+        saveTimer = window.setTimeout(async () => {
+          const next = { owner_id: siteAuth.user.id, week_key: week, updated_at: new Date().toISOString() };
+          form.querySelectorAll('[data-review-field]').forEach((input) => {
+            const key = input.dataset.reviewField === 'next' ? 'next_steps' : input.dataset.reviewField;
+            next[key] = input.value.slice(0, 5000);
+          });
+          weeklyReviews.set(week, next);
+          const { error } = await siteAuth.client.from('weekly_reviews').upsert(next, { onConflict: 'owner_id,week_key' });
+          status.textContent = error ? `保存失败：${error.message}` : '已同步到云端';
+        }, 650);
       });
     });
   };
@@ -278,7 +311,9 @@
     window.addEventListener('scroll', toggleTopButton, { passive: true });
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    siteAuth = await window.siteAuthReady;
+    await loadCloudStudyData();
     const plans = safeJson(document.querySelector('.study-plan-data'));
     renderHomeDashboard(plans);
     renderStudyPage(plans);

@@ -1810,20 +1810,20 @@ body > .relative.flex.flex-col.grow > footer {
     }
 }
 
-/* Personal study data is editable only in the local owner environment. */
+/* Personal study data is revealed only after the authenticated admin role is verified. */
 .study-visitor-only {
     display: none !important;
 }
 
-html[data-site-access="visitor"] .study-owner-only {
+html:not([data-site-access="admin"]) .study-owner-only {
     display: none !important;
 }
 
-html[data-site-access="visitor"] .study-visitor-only {
+html:not([data-site-access="admin"]) .study-visitor-only {
     display: block !important;
 }
 
-html[data-site-access="visitor"] a.study-visitor-only {
+html:not([data-site-access="admin"]) a.study-visitor-only {
     display: inline-flex !important;
 }
 
@@ -1843,11 +1843,11 @@ html[data-site-access="visitor"] a.study-visitor-only {
     padding: 0.55rem 0.7rem;
 }
 
-html[data-site-access="owner"] .study-access-banner.study-owner-only {
+html[data-site-access="admin"] .study-access-banner.study-owner-only {
     display: flex !important;
 }
 
-html[data-site-access="visitor"] .study-access-banner.study-visitor-only {
+html:not([data-site-access="admin"]) .study-access-banner.study-visitor-only {
     display: flex !important;
 }
 
@@ -1929,7 +1929,7 @@ html[data-site-access="visitor"] .study-access-banner.study-visitor-only {
     line-height: 1.65;
 }
 
-html[data-site-access="visitor"] [data-study-day-status] {
+html:not([data-site-access="admin"]) [data-study-day-status] {
     display: none;
 }
 
@@ -1938,4 +1938,212 @@ html[data-site-access="visitor"] [data-study-day-status] {
         grid-template-columns: 1fr;
         gap: 0.2rem;
     }
+}
+
+/* Authentication, account, and first-party discussion surfaces. */
+.account-page,
+.auth-callback-page {
+    width: min(100%, 58rem);
+    margin: 0 auto;
+}
+
+.account-hero h1,
+.auth-callback-page h1 {
+    margin: 0.2rem 0 0.55rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    letter-spacing: 0;
+}
+
+.account-hero > p:last-child,
+.auth-callback-page > p,
+.auth-form > p,
+.account-help {
+    color: #64748b;
+    line-height: 1.65;
+}
+
+.account-notice,
+.discussion-state {
+    margin: 1rem 0;
+    border-left: 3px solid #2563eb;
+    background: rgba(37, 99, 235, 0.06);
+    color: #475569;
+    padding: 0.7rem 0.85rem;
+    line-height: 1.55;
+}
+
+.account-notice[data-type="success"] { border-left-color: #059669; background: rgba(5, 150, 105, 0.07); }
+.account-notice[data-type="error"],
+.discussion-state[data-type="error"] { border-left-color: #dc2626; background: rgba(220, 38, 38, 0.07); }
+.account-notice[data-type="warning"],
+.discussion-state[data-type="warning"] { border-left-color: #d97706; background: rgba(217, 119, 6, 0.07); }
+
+.account-panel {
+    margin-top: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    padding: 1.15rem;
+}
+
+.dark .account-panel { border-color: rgba(255,255,255,.1); background: rgba(15,23,42,.58); }
+
+.account-panel-head,
+.account-actions,
+.discussion-form-actions,
+.discussion-comment-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.account-panel-head h2 { margin: .15rem 0 0; font-size: 1.25rem; }
+.account-panel-head > span,
+[data-account-role] {
+    border: 1px solid rgba(37,99,235,.22);
+    border-radius: 999px;
+    color: #1d4ed8;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: .25rem .55rem;
+}
+
+.auth-form { margin-top: 1rem; }
+.auth-form label,
+.discussion-form label {
+    display: block;
+    margin-bottom: .4rem;
+    color: #334155;
+    font-size: .85rem;
+    font-weight: 700;
+}
+.dark .auth-form label,
+.dark .discussion-form label { color: #e2e8f0; }
+
+.auth-inline-control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .55rem;
+}
+
+.auth-inline-control input,
+.discussion-form textarea {
+    width: 100%;
+    border: 1px solid rgba(148,163,184,.45);
+    border-radius: 6px;
+    background: rgba(255,255,255,.82);
+    color: #0f172a;
+    padding: .7rem .8rem;
+}
+.dark .auth-inline-control input,
+.dark .discussion-form textarea { border-color: rgba(255,255,255,.14); background: rgba(15,23,42,.72); color: #f8fafc; }
+
+.auth-inline-control button,
+.auth-github-button,
+.account-actions button,
+.account-actions a,
+.discussion-form-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.7rem;
+    border: 0;
+    border-radius: 6px;
+    background: #1d4ed8;
+    color: #fff;
+    font-weight: 700;
+    padding: .65rem .9rem;
+    text-decoration: none;
+}
+.auth-inline-control button:disabled,
+.discussion-form-actions button:disabled { cursor: wait; opacity: .55; }
+.auth-form > p,
+.account-help { margin: .55rem 0 0; font-size: .78rem; }
+
+.auth-text-button,
+.discussion-secondary,
+.discussion-comment-actions button {
+    border: 0 !important;
+    background: transparent !important;
+    color: #2563eb !important;
+    min-height: auto !important;
+    padding: .35rem 0 !important;
+}
+
+.account-divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 1.2rem 0 .8rem;
+    color: #64748b;
+    font-size: .75rem;
+}
+.account-divider::before,
+.account-divider::after { content: ""; flex: 1; height: 1px; background: rgba(148,163,184,.28); }
+.auth-github-button { width: 100%; background: #111827; }
+
+.account-details { display: grid; gap: .55rem; margin: 1rem 0; }
+.account-details > div { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: .7rem; }
+.account-details dt { color: #64748b; }
+.account-details dd { min-width: 0; overflow-wrap: anywhere; }
+.account-actions { margin-top: 1rem; justify-content: flex-start; }
+.migration-panel { border-left: 4px solid #059669; }
+
+.auth-callback-page {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.auth-callback-loader {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-bottom: 1rem;
+    border: 3px solid rgba(37,99,235,.18);
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: auth-spin .8s linear infinite;
+}
+@keyframes auth-spin { to { transform: rotate(360deg); } }
+
+.discussion-panel { margin-top: 1.5rem; }
+.discussion-state a { margin-left: .35rem; color: #2563eb; font-weight: 700; }
+.discussion-form { margin: 1rem 0 1.25rem; border-bottom: 1px solid rgba(148,163,184,.24); padding-bottom: 1.15rem; }
+.discussion-form textarea { resize: vertical; }
+.discussion-form-actions { margin-top: .55rem; justify-content: flex-end; }
+.discussion-form-actions > span { margin-right: auto; color: #64748b; font-size: .75rem; }
+.discussion-replying { margin-bottom: .55rem; color: #2563eb; font-size: .8rem; }
+.discussion-list { display: grid; gap: .75rem; }
+.discussion-comment {
+    margin-left: calc(var(--comment-depth, 0) * 1.1rem);
+    border-left: 3px solid rgba(37,99,235,.22);
+    background: rgba(248,250,252,.78);
+    padding: .8rem .9rem;
+}
+.dark .discussion-comment { background: rgba(15,23,42,.48); }
+.discussion-comment-head > div { display: flex; align-items: baseline; gap: .55rem; }
+.discussion-comment-head time,
+.discussion-comment-head > span { color: #64748b; font-size: .72rem; }
+.discussion-comment > p { margin: .5rem 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; }
+.discussion-comment-actions { display: flex; gap: .8rem; }
+.discussion-comment-actions button { font-size: .76rem; }
+.discussion-comment-actions button.is-danger { color: #dc2626 !important; }
+[data-save-status] { display: block; margin-top: .35rem; color: #64748b; font-size: .72rem; }
+
+@media (max-width: 520px) {
+    .auth-inline-control,
+    .account-details > div { grid-template-columns: 1fr; }
+    .account-panel-head,
+    .account-actions { align-items: flex-start; flex-direction: column; }
+    .auth-inline-control button,
+    .account-actions a,
+    .account-actions button { width: 100%; }
+    .discussion-comment { margin-left: calc(var(--comment-depth, 0) * .55rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-callback-loader { animation: none; }
 }
