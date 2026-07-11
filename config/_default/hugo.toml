@@ -3,7 +3,7 @@ baseURL = 'https://jacksu314-ops.github.io/hugo-blog/'
 languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
 theme = 'blowfish'
-title = 'My Hugo Blog'
+title = "Jack Su's Digital Garden"
 
 # 启用某些功能
 enableRobotsTXT = true

@@ -1,9 +1,43 @@
 # 主导航菜单
 [[main]]
-  identifier = "posts"
+  identifier = "writing"
   name = "文章"
-  pageRef = "posts"
   weight = 10
+
+[[main]]
+  identifier = "all-posts"
+  name = "全部文章"
+  pageRef = "posts"
+  parent = "writing"
+  weight = 11
+
+[[main]]
+  identifier = "archives"
+  name = "归档"
+  pageRef = "archives"
+  parent = "writing"
+  weight = 12
+
+[[main]]
+  identifier = "tags"
+  name = "标签"
+  pageRef = "tags"
+  parent = "writing"
+  weight = 13
+
+[[main]]
+  identifier = "categories"
+  name = "分类"
+  pageRef = "categories"
+  parent = "writing"
+  weight = 14
+
+[[main]]
+  identifier = "calendar"
+  name = "日历"
+  pageRef = "calendar"
+  parent = "writing"
+  weight = 15
 
 [[main]]
   identifier = "study"
@@ -24,46 +58,16 @@
   weight = 40
 
 [[main]]
-  identifier = "archives"
-  name = "归档"
-  pageRef = "archives"
-  weight = 50
-
-[[main]]
-  identifier = "tags"
-  name = "标签"
-  pageRef = "tags"
-  weight = 60
-
-[[main]]
-  identifier = "categories"
-  name = "分类"
-  pageRef = "categories"
-  weight = 70
-
-[[main]]
-  identifier = "calendar"
-  name = "日历"
-  pageRef = "calendar"
-  weight = 80
-
-[[main]]
-  identifier = "search"
-  name = "搜索"
-  pageRef = "search"
-  weight = 90
-
-[[main]]
   identifier = "about"
   name = "关于"
   pageRef = "about"
-  weight = 100
+  weight = 50
 
 [[main]]
   identifier = "account"
   name = "登录"
   pageRef = "account"
-  weight = 110
+  weight = 60
 
 # 页脚菜单
 [[footer]]

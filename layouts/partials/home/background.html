@@ -1,0 +1,65 @@
+{{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
+<article class="prose dark:prose-invert max-w-full home-identity-shell">
+  <div class="relative">
+    <div class="mx-auto max-w-7xl p-0">
+      <div class="relative sm:overflow-hidden">
+        <div class="fixed inset-x-0 top-0 -z-10">
+          {{ $homepageImage := "" }}
+          {{ with .Site.Params.homepage.homepageImage | default .Site.Params.defaultBackgroundImage }}
+            {{ if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") }}
+              {{ $homepageImage = resources.GetRemote . }}
+            {{ else }}
+              {{ $homepageImage = resources.Get . }}
+            {{ end }}
+          {{ end }}
+          {{ if $homepageImage }}
+            <img id="background-image" class="nozoom mt-0 mr-0 mb-0 ml-0 h-[1000px] w-full object-cover" src="{{ $homepageImage.RelPermalink }}" role="presentation">
+            <div class="home-background-wash absolute inset-0 h-[1000px]"></div>
+          {{ end }}
+        </div>
+
+        <div class="home-identity relative flex flex-col items-center justify-center px-1 text-center">
+          {{ with .Site.Params.Author.image }}
+            {{ $authorImage := resources.Get . }}
+            {{ if $authorImage }}
+              {{ $final := $authorImage }}
+              {{ $squareImage := $authorImage }}
+              {{ if not $disableImageOptimization }}
+                {{ $final = $authorImage.Fill (print "288x288 q" ( $.Site.Params.Author.imagequality | default "96" )) }}
+                {{ $shortSide := int (math.Min $authorImage.Width $authorImage.Height) }}
+                {{ $squareImage = $authorImage.Crop (printf "%dx%d" $shortSide $shortSide ) }}
+              {{ end }}
+              <img class="mb-2 h-36 w-36 rounded-full" width="144" height="144" alt="{{ $.Site.Params.Author.name }}" src="{{ $final.RelPermalink }}" data-zoom-src="{{ $squareImage.RelPermalink }}">
+            {{ end }}
+          {{ end }}
+          <p class="home-identity-kicker">Research · Build · Learn · Write</p>
+          <h1 class="mb-2 text-4xl font-extrabold text-neutral-800 dark:text-neutral-200">{{ .Site.Params.Author.name | default .Site.Title }}</h1>
+          {{ with .Site.Params.Author.headline }}<h2 class="mt-0 mb-0 text-xl text-neutral-800 dark:text-neutral-300">{{ . | markdownify }}</h2>{{ end }}
+          <p class="home-identity-summary">记录工程研究、技术实践与长期成长</p>
+          <div class="home-identity-actions not-prose" aria-label="主要入口">
+            <a href="{{ "posts/" | relURL }}">查看文章</a>
+            <a href="{{ "projects/" | relURL }}">查看项目</a>
+            <a href="{{ "about/" | relURL }}">关于我</a>
+          </div>
+          <div class="home-social-links mt-3 text-2xl">
+            {{ with .Site.Params.Author.links }}
+              <div class="flex flex-wrap">
+                {{ range $links := . }}{{ range $name, $url := $links }}
+                  <a class="hover:text-primary-400 text-primary-800 dark:text-primary-200 px-1" href="{{ $url }}" target="_blank" aria-label="{{ $name | title }}" title="{{ $name | title }}" rel="me noopener noreferrer">{{ partial "icon.html" $name }}</a>
+                {{ end }}{{ end }}
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="home-recent-section">
+  {{ partial "recent-articles/main.html" . }}
+</section>
+
+<section class="prose dark:prose-invert max-w-full home-after-recent">
+  {{ .Content }}
+</section>
