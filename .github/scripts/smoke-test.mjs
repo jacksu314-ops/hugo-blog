@@ -26,6 +26,8 @@ for (const route of pages) {
 }
 
 const studyHtml = fs.readFileSync(pageFile('/study/'), 'utf8');
+const homeHtml = fs.readFileSync(pageFile('/'), 'utf8');
+const articleHtml = fs.readFileSync(pageFile('/posts/fluent-udf-journal-bearing-equilibrium/'), 'utf8');
 const authCss = fs.readFileSync(path.resolve('assets/css/custom.css'), 'utf8');
 const authJs = fs.readFileSync(path.resolve('assets/js/auth.js'), 'utf8');
 assert(studyHtml.includes('记录已隐藏'), 'Visitor study privacy copy is missing');
@@ -33,5 +35,9 @@ assert(!studyHtml.includes('data-week-rate>0%'), 'Visitor build contains a misle
 assert(authCss.includes('html:not([data-site-access="admin"]) .study-owner-only'), 'Visitor default must hide admin controls');
 assert(authJs.includes("role === 'admin'"), 'Admin role contract is missing');
 assert(/authState\.role\s*=\s*authState\.user\s*\?\s*'member'\s*:\s*'visitor'/.test(authJs), 'Member role contract is missing');
+assert(homeHtml.includes('id=site-entrance'), 'Home entry experience is missing');
+assert(homeHtml.includes('social-share.png'), 'Home entry image is missing');
+assert(homeHtml.includes('id=share-page'), 'Global share trigger is missing');
+assert(articleHtml.includes('linkedin.com') && articleHtml.includes('twitter.com'), 'Article sharing links are missing');
 
-console.log(`Smoke-tested ${pages.length} key pages and visitor/member/admin UI contracts.`);
+console.log(`Smoke-tested ${pages.length} key pages, access contracts, sharing, and entry experience.`);

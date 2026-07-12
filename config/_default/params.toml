@@ -36,6 +36,7 @@ defaultBackgroundImage = "img/background.png"  # 全局背景图
   showTaxonomies = true
   showWordCount = true
   showComments = true
+  sharingLinks = ["linkedin", "twitter", "telegram", "email"]
 
 # 列表页设置
 [list]

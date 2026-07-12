@@ -316,6 +316,122 @@
     window.addEventListener('scroll', toggleTopButton, { passive: true });
   };
 
+  const setupSharing = () => {
+    const trigger = document.getElementById('share-page');
+    const popover = document.getElementById('share-popover');
+    if (!trigger || !popover) return;
+
+    const status = document.getElementById('share-status');
+    const closeButton = document.getElementById('close-share');
+    const nativeButton = document.getElementById('native-share');
+    const copyButton = document.getElementById('copy-page-link');
+    const url = window.location.href;
+    const title = document.title.replace(/\s*[·|]\s*Jack Su's Digital Garden\s*$/, '');
+    const encodedUrl = encodeURIComponent(url);
+    const encodedTitle = encodeURIComponent(title);
+    const platformUrls = {
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+      telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+      email: `mailto:?subject=${encodedTitle}&body=${encodeURIComponent(`${title}\n${url}`)}`
+    };
+
+    popover.querySelectorAll('[data-share-platform]').forEach((link) => {
+      link.href = platformUrls[link.dataset.sharePlatform];
+    });
+
+    const setOpen = (open) => {
+      popover.hidden = !open;
+      trigger.setAttribute('aria-expanded', String(open));
+      if (open) closeButton.focus();
+    };
+
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        status.textContent = '链接已复制，可以粘贴到微信或其他平台。';
+      } catch (_error) {
+        status.textContent = '复制失败，请从地址栏复制链接。';
+      }
+    };
+
+    trigger.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text: title, url });
+          status.textContent = '已打开系统分享。';
+          return;
+        } catch (error) {
+          if (error?.name === 'AbortError') return;
+        }
+      }
+      setOpen(popover.hidden);
+    });
+    closeButton.addEventListener('click', () => setOpen(false));
+    copyButton.addEventListener('click', copy);
+    nativeButton.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text: title, url });
+          return;
+        } catch (error) {
+          if (error?.name === 'AbortError') return;
+        }
+      }
+      await copy();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !popover.hidden) setOpen(false);
+    });
+    document.addEventListener('click', (event) => {
+      if (!popover.hidden && !popover.contains(event.target) && !trigger.contains(event.target)) setOpen(false);
+    });
+  };
+
+  const setupEntrance = () => {
+    const entrance = document.getElementById('site-entrance');
+    if (!entrance) return;
+    const key = entrance.dataset.entranceKey;
+    const enterButton = document.getElementById('enter-garden');
+    const skipButton = document.getElementById('skip-entrance');
+    let visible = false;
+
+    const close = () => {
+      if (!visible) return;
+      visible = false;
+      entrance.classList.remove('is-visible');
+      entrance.setAttribute('aria-hidden', 'true');
+      try {
+        window.sessionStorage.setItem(key, 'seen');
+      } catch (_error) {
+        // Storage can be unavailable in strict privacy modes.
+      }
+      window.setTimeout(() => { entrance.hidden = true; }, 380);
+    };
+
+    try {
+      if (window.sessionStorage.getItem(key) === 'seen') {
+        entrance.hidden = true;
+        return;
+      }
+    } catch (_error) {
+      // If storage is unavailable, show the entry once per page load.
+    }
+
+    entrance.hidden = false;
+    window.requestAnimationFrame(() => {
+      visible = true;
+      entrance.classList.add('is-visible');
+      entrance.setAttribute('aria-hidden', 'false');
+      enterButton.focus();
+    });
+    enterButton.addEventListener('click', close);
+    skipButton.addEventListener('click', close);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' || (event.key === 'Enter' && visible)) close();
+    });
+  };
+
   const authKey = (auth) => `${auth?.user?.id || 'visitor'}:${auth?.role || (auth?.isAdmin ? 'admin' : 'visitor')}`;
 
   const applyStudyAuth = async (nextAuth, force = false) => {
@@ -342,5 +458,7 @@
     await applyStudyAuth(initialAuth);
     setupReadingExperience();
     setupSiteTools();
+    setupSharing();
+    setupEntrance();
   });
 })();

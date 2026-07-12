@@ -1,5 +1,15 @@
 {{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
 <article class="prose dark:prose-invert max-w-full home-identity-shell">
+  {{- $entranceImage := resources.Get "img/social-share.png" -}}
+  <div id="site-entrance" class="site-entrance" aria-hidden="true" data-entrance-key="jack-su-digital-garden-v1">
+    {{ with $entranceImage }}<img src="{{ .RelPermalink }}" alt="" aria-hidden="true">{{ end }}
+    <div class="site-entrance-shade"></div>
+    <div class="site-entrance-content not-prose">
+      <p>Jack Su's Digital Garden</p>
+      <button type="button" id="enter-garden">进入花园</button>
+      <button type="button" id="skip-entrance">跳过入场</button>
+    </div>
+  </div>
   <div class="relative">
     <div class="mx-auto max-w-7xl p-0">
       <div class="relative sm:overflow-hidden">

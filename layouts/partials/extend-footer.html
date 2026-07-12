@@ -9,6 +9,9 @@
 </div>
 
 <div class="site-tool-rail print:hidden" aria-label="快捷工具">
+  <button type="button" id="share-page" class="site-tool-button" aria-label="分享当前页面" data-tooltip="分享页面" aria-expanded="false" aria-controls="share-popover">
+    {{ partial "icon.html" "link" }}
+  </button>
   <button type="button" id="random-explore" class="site-tool-button" aria-label="随机探索一篇内容" data-tooltip="随机探索">
     {{ partial "icon.html" "wand-magic-sparkles" }}
   </button>
@@ -16,6 +19,24 @@
     {{ partial "icon.html" "chevron-down" }}
   </button>
 </div>
+
+<section id="share-popover" class="share-popover print:hidden" aria-label="分享当前页面" hidden>
+  <div class="share-popover-head">
+    <div><span>Share</span><strong>分享当前页面</strong></div>
+    <button type="button" id="close-share" aria-label="关闭分享菜单">{{ partial "icon.html" "xmark" }}</button>
+  </div>
+  <div class="share-main-actions">
+    <button type="button" id="native-share" class="share-action" aria-label="使用系统分享">{{ partial "icon.html" "link" }}<span>系统分享</span></button>
+    <button type="button" id="copy-page-link" class="share-action" aria-label="复制页面链接">{{ partial "icon.html" "link" }}<span>复制链接</span></button>
+  </div>
+  <div class="share-platforms" aria-label="社交平台">
+    <a data-share-platform="linkedin" target="_blank" rel="noopener noreferrer" aria-label="分享到 LinkedIn">{{ partial "icon.html" "linkedin" }}</a>
+    <a data-share-platform="twitter" target="_blank" rel="noopener noreferrer" aria-label="分享到 X">{{ partial "icon.html" "x-twitter" }}</a>
+    <a data-share-platform="telegram" target="_blank" rel="noopener noreferrer" aria-label="分享到 Telegram">{{ partial "icon.html" "telegram" }}</a>
+    <a data-share-platform="email" aria-label="通过邮件分享">{{ partial "icon.html" "email" }}</a>
+  </div>
+  <p id="share-status" role="status">复制链接后可分享至微信或其他平台。</p>
+</section>
 
 <script type="application/json" id="site-explore-data">{{ $exploreItems | jsonify | safeHTML }}</script>
 {{- $supabase := site.Params.supabase | default dict -}}

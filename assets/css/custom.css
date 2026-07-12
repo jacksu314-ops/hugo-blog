@@ -2814,3 +2814,107 @@ html:not([data-site-access="admin"]) [data-study-day-status] {
 @media (prefers-reduced-motion: reduce) {
     .auth-callback-loader { animation: none; }
 }
+
+/* First-visit entrance and share controls. */
+.site-entrance {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #020617;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .36s ease;
+}
+
+.site-entrance.is-visible { opacity: 1; pointer-events: auto; }
+.site-entrance > img,
+.site-entrance-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.site-entrance > img { object-fit: cover; object-position: center; }
+.site-entrance-shade { background: rgba(2, 6, 23, .28); }
+
+.site-entrance-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .65rem;
+    padding-top: min(32vh, 14rem);
+    text-align: center;
+}
+
+.site-entrance-content p {
+    margin: 0 0 .1rem;
+    color: rgba(224, 242, 254, .86);
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.site-entrance-content button {
+    min-width: 9rem;
+    min-height: 2.7rem;
+    border: 1px solid rgba(125, 211, 252, .52);
+    border-radius: 8px;
+    background: rgba(2, 132, 199, .9);
+    color: #fff;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 750;
+    cursor: pointer;
+    padding: .55rem .9rem;
+}
+
+.site-entrance-content #skip-entrance {
+    min-height: auto;
+    border-color: transparent;
+    background: transparent;
+    color: rgba(224, 242, 254, .8);
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.share-popover {
+    position: fixed;
+    z-index: 60;
+    right: 1rem;
+    bottom: 9.25rem;
+    width: min(calc(100vw - 2rem), 19rem);
+    border: 1px solid rgba(148, 163, 184, .32);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 18px 46px rgba(15, 23, 42, .2);
+    color: #0f172a;
+    padding: .9rem;
+}
+
+.dark .share-popover { border-color: rgba(255,255,255,.13); background: rgba(15,23,42,.97); color: #f8fafc; }
+.share-popover[hidden] { display: none; }
+.share-popover-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; }
+.share-popover-head span { display: block; color: #2563eb; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.share-popover-head strong { display: block; margin-top: .12rem; font-size: .98rem; }
+.share-popover-head button { display: grid; place-items: center; width: 2rem; height: 2rem; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.share-popover-head button:hover { background: rgba(148,163,184,.14); }
+.share-main-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin-top: .9rem; }
+.share-action { display: inline-flex; align-items: center; justify-content: center; gap: .35rem; min-height: 2.4rem; border: 1px solid rgba(37,99,235,.25); border-radius: 6px; background: rgba(37,99,235,.06); color: #1d4ed8; cursor: pointer; font: inherit; font-size: .78rem; font-weight: 700; }
+.dark .share-action { color: #bfdbfe; background: rgba(96,165,250,.1); border-color: rgba(96,165,250,.24); }
+.share-action .icon { width: .9rem; height: .9rem; }
+.share-platforms { display: flex; gap: .55rem; margin-top: .75rem; }
+.share-platforms a { display: grid; place-items: center; width: 2.35rem; height: 2.35rem; border: 1px solid rgba(148,163,184,.3); border-radius: 6px; color: #334155; text-decoration: none; }
+.share-platforms a:hover { border-color: #2563eb; color: #1d4ed8; background: rgba(37,99,235,.07); }
+.dark .share-platforms a { border-color: rgba(255,255,255,.14); color: #e2e8f0; }
+.share-platforms .icon { width: 1rem; height: 1rem; }
+.share-popover p { margin: .7rem 0 0; color: #64748b; font-size: .72rem; line-height: 1.5; }
+
+@media (max-width: 520px) {
+    .site-entrance > img { object-position: 50% center; }
+    .site-entrance-content { padding-top: min(35vh, 14rem); }
+    .share-popover { right: .75rem; bottom: 8.5rem; width: min(calc(100vw - 1.5rem), 20rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-entrance { transition: none; }
+}
