@@ -1,0 +1,44 @@
+{{- $plan := site.Data.study_plan -}}
+<section class="home-study-dashboard home-learning-section not-prose" data-study-dashboard>
+  <div class="home-dashboard-head">
+    <div>
+      <p class="section-eyebrow">Currently Learning</p>
+      <h2>当前学习</h2>
+      <p>在工程研究之外，持续推进语言能力与技术写作。</p>
+    </div>
+    <a class="home-dashboard-link" href="{{ "study/" | relURL }}">进入学习中心</a>
+  </div>
+
+  <div class="home-learning-public study-visitor-only">
+    <div class="home-learning-goals">
+      <div><span>TOEIC</span><strong>420 → 600+</strong></div>
+      <div><span>Japanese</span><strong>初级入门 → N3</strong></div>
+      <div><span>当前阶段</span><strong>第 1 阶段 · 基础强化</strong></div>
+    </div>
+    <div class="home-private-state" aria-label="个人学习统计仅管理员可见">
+      <span class="home-lock" aria-hidden="true">🔒</span>
+      <div><strong>个人学习统计</strong><p>完成率、学习时长与连续记录仅管理员可见</p></div>
+    </div>
+  </div>
+
+  <div class="study-owner-only">
+    <div class="home-dashboard-grid" aria-label="个人学习进度">
+      <div class="home-dashboard-stat"><span>本周完成率</span><strong data-study-rate>--</strong></div>
+      <div class="home-dashboard-stat"><span>完成天数</span><strong><span data-study-days>--</span>/<span data-study-total-days>--</span></strong></div>
+      <div class="home-dashboard-stat"><span>累计分钟</span><strong data-study-minutes>--</strong></div>
+      <div class="home-dashboard-stat"><span>连续打卡</span><strong><span data-study-streak>--</span> 天</strong></div>
+    </div>
+    <div class="home-dashboard-progress" aria-label="本周学习进度"><span data-study-progress></span></div>
+  </div>
+
+  <div class="home-dashboard-next">
+    <div>
+      <span data-study-next-label>下一项计划</span>
+      <h3 data-study-next-title>正在读取学习计划...</h3>
+      <p data-study-next-detail></p>
+    </div>
+    <a class="study-owner-only" href="{{ "study/#weekly-review" | relURL }}">填写周复盘</a>
+    <a class="study-visitor-only" href="{{ "study/" | relURL }}">查看公开计划</a>
+  </div>
+</section>
+<script type="application/json" class="study-plan-data">{{ $plan.dailyPlan | jsonify | safeHTML }}</script>

@@ -1,0 +1,16 @@
+{{- $entries := first 3 site.Data.changelog -}}
+<section class="home-changelog not-prose" aria-label="网站动态">
+  <div class="home-section-head">
+    <div><p class="section-eyebrow">Site Updates</p><h2>网站动态</h2></div>
+    <a href="{{ "changelog/" | relURL }}">查看完整日志</a>
+  </div>
+  <div class="home-changelog-list">
+    {{- range $entries -}}
+      <a href="{{ "changelog/" | relURL }}">
+        <time datetime="{{ .date }}">{{ .date }}</time>
+        <strong>{{ .version }} · {{ .title }}</strong>
+        <span>{{ .type }}</span>
+      </a>
+    {{- end -}}
+  </div>
+</section>

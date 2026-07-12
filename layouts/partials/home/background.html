@@ -32,13 +32,13 @@
               <img class="mb-2 h-36 w-36 rounded-full" width="144" height="144" alt="{{ $.Site.Params.Author.name }}" src="{{ $final.RelPermalink }}" data-zoom-src="{{ $squareImage.RelPermalink }}">
             {{ end }}
           {{ end }}
-          <p class="home-identity-kicker">Research · Build · Learn · Write</p>
-          <h1 class="mb-2 text-4xl font-extrabold text-neutral-800 dark:text-neutral-200">{{ .Site.Params.Author.name | default .Site.Title }}</h1>
-          {{ with .Site.Params.Author.headline }}<h2 class="mt-0 mb-0 text-xl text-neutral-800 dark:text-neutral-300">{{ . | markdownify }}</h2>{{ end }}
-          <p class="home-identity-summary">记录工程研究、技术实践与长期成长</p>
+          <p class="home-identity-kicker">Mechanical Engineer</p>
+          <h1 class="mb-2 text-4xl font-extrabold text-neutral-800 dark:text-neutral-200">苏慧豪 / Jack Su</h1>
+          <h2 class="mt-0 mb-0 text-xl text-neutral-800 dark:text-neutral-300">Rotor Dynamics · Fluid Machinery · CFD · Fault Diagnosis</h2>
+          <p class="home-identity-summary">把工程问题转化为可以计算、仿真和编程解决的问题。</p>
           <div class="home-identity-actions not-prose" aria-label="主要入口">
-            <a href="{{ "posts/" | relURL }}">查看文章</a>
-            <a href="{{ "projects/" | relURL }}">查看项目</a>
+            <a href="{{ "projects/" | relURL }}">查看研究项目</a>
+            <a href="{{ "posts/" | relURL }}">阅读文章</a>
             <a href="{{ "about/" | relURL }}">关于我</a>
           </div>
           <div class="home-social-links mt-3 text-2xl">
@@ -56,10 +56,11 @@
   </div>
 </article>
 
+{{ partial "home/projects.html" . }}
+
 <section class="home-recent-section">
   {{ partial "recent-articles/main.html" . }}
 </section>
 
-<section class="prose dark:prose-invert max-w-full home-after-recent">
-  {{ .Content }}
-</section>
+{{ partial "home/learning.html" . }}
+{{ partial "home/changelog.html" . }}

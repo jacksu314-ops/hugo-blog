@@ -46,10 +46,10 @@
         </div>
 
         <div class="weekly-summary-grid" aria-label="本周学习统计">
-            <article><span>完成率</span><strong data-week-rate>0%</strong></article>
-            <article><span>完成天数</span><strong data-week-days>0/0</strong></article>
-            <article><span>完成分钟</span><strong data-week-minutes>0/0</strong></article>
-            <article><span>连续打卡</span><strong data-week-streak>0 天</strong></article>
+            <article><span>完成率</span><strong data-week-rate>--</strong></article>
+            <article><span>完成天数</span><strong data-week-days>--/--</strong></article>
+            <article><span>完成分钟</span><strong data-week-minutes>--/--</strong></article>
+            <article><span>连续打卡</span><strong data-week-streak>-- 天</strong></article>
         </div>
 
         <div class="weekly-review-grid">
@@ -123,7 +123,8 @@
                         <h3>{{ .date }}</h3>
                     </div>
                     <div class="study-day-state">
-                        <span data-study-day-status="{{ .date }}">未打卡</span>
+                        <span class="study-owner-only" data-study-day-status="{{ .date }}">--</span>
+                        <span class="study-visitor-only">记录已隐藏</span>
                         <strong>{{ .minutes }}m</strong>
                     </div>
                 </div>
