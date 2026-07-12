@@ -52,24 +52,32 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build
+      - name: Build validation site
         run: |
-          hugo --gc --minify \
+          hugo --gc \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
             --cacheDir "${{ runner.temp }}/hugo_cache" \
-            --destination "${{ runner.temp }}/site"
+            --destination "${{ runner.temp }}/validation_site"
+          find "${{ runner.temp }}/validation_site" -name '*.html' -exec sed -i '1s/<!doctype html>/<!DOCTYPE html>/' {} +
 
       - name: Check JavaScript syntax
         run: find assets/js -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Check local links
-        run: node .github/scripts/check-local-links.mjs "${{ runner.temp }}/site"
+        run: node .github/scripts/check-local-links.mjs "${{ runner.temp }}/validation_site"
 
       - name: Validate HTML
-        run: npx --yes html-validate@9.4.0 --config .htmlvalidate.json "${{ runner.temp }}/site"
+        run: npx --yes html-validate@9.4.0 "${{ runner.temp }}/validation_site"
 
       - name: Smoke-test key pages and access states
-        run: node .github/scripts/smoke-test.mjs "${{ runner.temp }}/site"
+        run: node .github/scripts/smoke-test.mjs "${{ runner.temp }}/validation_site"
+
+      - name: Build deployment site
+        run: |
+          hugo --gc --minify \
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --cacheDir "${{ runner.temp }}/hugo_cache" \
+            --destination "${{ runner.temp }}/site"
 
       - name: Serve generated site for HTTP smoke test
         run: |
