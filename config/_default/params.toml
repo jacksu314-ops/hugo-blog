@@ -2,6 +2,9 @@
 
 # 配色方案 (可选: blowfish, ocean, forest, neon, terminal 等)
 colorScheme = "blowfish"
+description = "苏慧豪的个人数字花园：工程研究、数值仿真、编程实践与长期学习。"
+keywords = ["旋转机械", "转子动力学", "流体机械", "CFD", "故障诊断", "Fluent UDF", "MATLAB", "Python"]
+defaultSocialImage = "img/social-share.png"
 
 # 外观设置
 defaultAppearance = "light"  # light 或 dark
