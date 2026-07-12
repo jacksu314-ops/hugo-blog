@@ -82,8 +82,9 @@ jobs:
       - name: Serve generated site for HTTP smoke test
         run: |
           npx --yes serve@14.2.4 "${{ runner.temp }}/site" --listen 1313 > "${{ runner.temp }}/serve.log" 2>&1 &
+          sleep 3
           for route in / /posts/ /projects/ /study/ /about/ /account/ /auth/callback/ /now/; do
-            curl --fail --silent --show-error "http://127.0.0.1:1313${route}" > /dev/null
+            curl --fail --silent --show-error --retry 5 --retry-connrefused --retry-delay 1 "http://127.0.0.1:1313${route}" > /dev/null
           done
 
       - name: Upload GitHub Pages artifact
