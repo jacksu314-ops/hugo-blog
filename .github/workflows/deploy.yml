@@ -67,7 +67,7 @@ jobs:
         run: node .github/scripts/check-local-links.mjs "${{ runner.temp }}/validation_site"
 
       - name: Validate HTML
-        run: npx --yes html-validate@9.4.0 "${{ runner.temp }}/validation_site"
+        run: npx --yes html-validate@9.4.0 --config .htmlvalidate.json "${{ runner.temp }}/validation_site"
 
       - name: Smoke-test key pages and access states
         run: node .github/scripts/smoke-test.mjs "${{ runner.temp }}/validation_site"
