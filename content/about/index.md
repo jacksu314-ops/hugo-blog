@@ -13,6 +13,15 @@ heroStyle: "background"
   <p>我喜欢把工程问题转化为可以计算、仿真和编程解决的问题。这个网站用于记录我的工程研究、代码实践、语言学习和长期成长。</p>
 </section>
 
+<section class="about-current not-prose">
+  <div>
+    <p class="section-eyebrow">Current Status</p>
+    <h2>当前身份</h2>
+    <p>目前从事旋转机械相关工程工作，同时持续开展转子动力学、流体机械数值模拟与故障诊断方向的学习与研究。</p>
+  </div>
+  <a href="{{< relref "/now" >}}">查看完整当前状态</a>
+</section>
+
 <section class="about-facts not-prose" aria-label="教育与研究经历">
   <article>
     <span>Education</span>

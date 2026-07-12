@@ -1,0 +1,28 @@
+{{- define "main" -}}
+{{- $now := site.Data.now -}}
+<section class="now-page">
+  <header class="now-hero">
+    <p class="section-eyebrow">Now</p>
+    <div class="now-heading-row">
+      <div>
+        <h1>我现在在做什么</h1>
+        <p>{{ $now.intro }}</p>
+      </div>
+      <time datetime="{{ $now.updated }}">{{ $now.period }}</time>
+    </div>
+  </header>
+
+  {{ partial "now-status.html" . }}
+
+  <section class="now-note">
+    <p class="section-eyebrow">About This Page</p>
+    <h2>一张会持续更新的近况快照</h2>
+    <p>文章记录已经形成的思考，项目记录完整的工程过程，而这里保留此刻正在投入时间的方向。状态发生明显变化时，我会更新这一页，不把它写成履历表。</p>
+    <div class="now-links">
+      <a href="{{ "projects/" | relURL }}">查看研究项目</a>
+      <a href="{{ "study/" | relURL }}">查看公开学习计划</a>
+      <a href="{{ "changelog/" | relURL }}">查看网站版本日志</a>
+    </div>
+  </section>
+</section>
+{{- end -}}

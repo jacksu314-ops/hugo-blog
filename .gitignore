@@ -3,6 +3,7 @@
 /resources/
 /hugo_stats.json
 /.hugo_build.lock
+/.hugo-cache/
 
 # Local development and editor files
 /.idea/

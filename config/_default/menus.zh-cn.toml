@@ -52,10 +52,23 @@
   weight = 30
 
 [[main]]
-  identifier = "changelog"
-  name = "日志"
-  pageRef = "changelog"
+  identifier = "updates"
+  name = "动态"
   weight = 40
+
+[[main]]
+  identifier = "changelog"
+  name = "网站日志"
+  pageRef = "changelog"
+  parent = "updates"
+  weight = 41
+
+[[main]]
+  identifier = "now"
+  name = "现在"
+  pageRef = "now"
+  parent = "updates"
+  weight = 42
 
 [[main]]
   identifier = "about"

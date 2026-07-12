@@ -1,0 +1,10 @@
+{{- $now := site.Data.now -}}
+<section class="now-status-grid not-prose" aria-label="当前状态">
+  {{- range $now.items -}}
+  <article>
+    <span>{{ .label }}</span>
+    <h2>{{ .value }}</h2>
+    <p>{{ .detail }}</p>
+  </article>
+  {{- end -}}
+</section>

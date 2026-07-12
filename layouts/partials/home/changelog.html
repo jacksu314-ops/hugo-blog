@@ -4,6 +4,11 @@
     <div><p class="section-eyebrow">Site Updates</p><h2>网站动态</h2></div>
     <a href="{{ "changelog/" | relURL }}">查看完整日志</a>
   </div>
+  <a class="home-now-strip" href="{{ "now/" | relURL }}">
+    <span>Now · {{ site.Data.now.period }}</span>
+    <strong>研究转子系统故障诊断 · 学习 TOEIC 与日语 · 建设 Digital Garden</strong>
+    <span>查看当前状态</span>
+  </a>
   <div class="home-changelog-list">
     {{- range $entries -}}
       <a href="{{ "changelog/" | relURL }}">

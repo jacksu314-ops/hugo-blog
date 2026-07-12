@@ -2,10 +2,19 @@
 {{- $logs := site.Data.changelog -}}
 <section class="changelog-page">
     <header class="changelog-hero">
-        <p class="section-eyebrow">Site Log</p>
-        <h1>修改日志与讨论区</h1>
-        <p>这里记录网站做过的重要调整。以后较大的页面、功能、内容结构修改，都会同步写入这条时间线。</p>
+        <p class="section-eyebrow">Site Changelog</p>
+        <h1>网站版本日志</h1>
+        <p>这里记录网站做过的重要调整。页面、功能和内容结构的较大变化，都会同步写入这条可追溯的时间线。</p>
     </header>
+
+    <section class="changelog-now not-prose">
+        <div>
+            <p class="section-eyebrow">Now · 当前状态</p>
+            <h2>{{ site.Data.now.period }}</h2>
+            <p>{{ site.Data.now.intro }}</p>
+        </div>
+        <a href="{{ "now/" | relURL }}">查看我现在在做什么</a>
+    </section>
 
     <section class="changelog-board">
         {{- range $logs -}}
