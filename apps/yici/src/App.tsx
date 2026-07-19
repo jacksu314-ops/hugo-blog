@@ -21,6 +21,7 @@ import {
   Flame,
   Highlighter,
   Headphones,
+  House,
   Import,
   Languages,
   LibraryBig,
@@ -156,7 +157,8 @@ const SNAPSHOTS_KEY = "yici-learning-snapshots-v1";
 const CLOUD_OWNER_KEY = "yici-cloud-owner-v1";
 const MIGRATION_DATE = "2026-07-17";
 const APP_BASE_URL = import.meta.env.BASE_URL;
-const ACCOUNT_URL = `${APP_BASE_URL.replace(/yici\/?$/, "")}account/`;
+const BLOG_URL = APP_BASE_URL.replace(/yici\/?$/, "") || "/";
+const ACCOUNT_URL = `${BLOG_URL}account/`;
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").trim();
 const SUPABASE_PUBLISHABLE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "").trim();
 const SUPABASE_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
@@ -1238,6 +1240,10 @@ export default function Home() {
           })}
         </nav>
         <div className="sidebar-bottom">
+          <a className="back-blog-link" href={BLOG_URL}>
+            <House size={18} />
+            <span>返回博客</span>
+          </a>
           <div className="streak-chip"><Flame size={17} /> 连续学习 4 天</div>
           <label className="theme-control">
             {theme === "dark" ? <Moon size={18} /> : theme === "light" ? <Sun size={18} /> : <SunMoon size={18} />}
@@ -1255,7 +1261,10 @@ export default function Home() {
         <div className="mobile-head">
           <button className="brand" onClick={() => setActiveTab("today")}><span className="brand-mark"><i /><i /></span><span>忆词</span></button>
           <div className="mobile-language-switch"><button className={studyLanguage === "en" ? "active" : ""} onClick={() => switchLanguage("en")}>EN</button><button className={studyLanguage === "ja" ? "active" : ""} onClick={() => switchLanguage("ja")}>日</button></div>
-          <select value={theme} onChange={(event) => setTheme(event.target.value as ThemeSetting)} aria-label="切换主题"><option value="dark">深色</option><option value="light">浅色</option><option value="system">系统</option></select>
+          <div className="mobile-head-actions">
+            <a className="mobile-blog-link" href={BLOG_URL} aria-label="返回博客" title="返回博客"><House size={17} /><span>博客</span></a>
+            <select value={theme} onChange={(event) => setTheme(event.target.value as ThemeSetting)} aria-label="切换主题"><option value="dark">深色</option><option value="light">浅色</option><option value="system">系统</option></select>
+          </div>
         </div>
 
         {activeTab === "today" && featured && (
