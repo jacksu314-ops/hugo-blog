@@ -1,0 +1,24 @@
+{
+  "name": "忆词｜双语单词学习",
+  "short_name": "忆词",
+  "description": "英语与日语自定义词库、间隔复习和记忆曲线",
+  "start_url": "./",
+  "id": "/hugo-blog/yici/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
+  "lang": "zh-CN",
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    { "name": "今日学习", "short_name": "今日", "url": "./" }
+  ],
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

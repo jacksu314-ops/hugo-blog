@@ -46,6 +46,13 @@
   weight = 20
 
 [[main]]
+  identifier = "yici"
+  name = "忆词"
+  pageRef = "yici"
+  parent = "study"
+  weight = 21
+
+[[main]]
   identifier = "projects"
   name = "项目"
   pageRef = "projects"

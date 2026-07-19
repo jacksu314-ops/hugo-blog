@@ -16,6 +16,19 @@
         </div>
     </header>
 
+    <section class="study-app-launch" aria-labelledby="yici-app-title">
+        <div>
+            <p class="section-eyebrow">Vocabulary App</p>
+            <h2 id="yici-app-title">忆词双语学习</h2>
+            <p>英语与日语独立学习，按日期复习，并支持日语语调、听力发音、记忆曲线和学习报告。</p>
+        </div>
+        <div class="study-app-launch__meta" aria-label="当前词库">
+            <span><strong>67</strong> TOEIC 词汇</span>
+            <span><strong>106</strong> 日语词汇</span>
+        </div>
+        <a href="{{ "yici/" | relURL }}">打开忆词 APP</a>
+    </section>
+
     <section class="study-target-grid" aria-label="学习目标">
         {{- range $plan.targets -}}
         <article class="study-target-card">

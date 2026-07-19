@@ -4,6 +4,9 @@
 /hugo_stats.json
 /.hugo_build.lock
 /.hugo-cache/
+/.runtime/
+/apps/yici/node_modules/
+/apps/yici/dist/
 
 # Local development and editor files
 /.idea/
