@@ -42,7 +42,8 @@ import {
   Volume2,
   X,
 } from "lucide-react";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { createClient, type User } from "@supabase/supabase-js";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { STUDY_VOCABULARY } from "./initial-data";
 import { CONVERSATION_PROGRESS, StudyHistorySeed } from "./initial-progress";
 
@@ -131,7 +132,7 @@ type ImportPreview = {
   sourceName: string;
 };
 
-type SyncStatus = "loading" | "synced" | "saving" | "offline";
+type SyncStatus = "loading" | "synced" | "saving" | "offline" | "signed-out" | "error";
 
 type StoredState = {
   words: Word[];
@@ -152,9 +153,18 @@ const THEME_KEY = "yici-theme";
 const LANGUAGE_KEY = "yici-study-language";
 const PROGRESS_MIGRATION_KEY = "yici-conversation-progress-v1";
 const SNAPSHOTS_KEY = "yici-learning-snapshots-v1";
+const CLOUD_OWNER_KEY = "yici-cloud-owner-v1";
 const MIGRATION_DATE = "2026-07-17";
 const APP_BASE_URL = import.meta.env.BASE_URL;
-const STATIC_HOSTED = APP_BASE_URL.includes("/yici/");
+const ACCOUNT_URL = `${APP_BASE_URL.replace(/yici\/?$/, "")}account/`;
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").trim();
+const SUPABASE_PUBLISHABLE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "").trim();
+const SUPABASE_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+const supabase = SUPABASE_CONFIGURED
+  ? createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, flowType: "pkce" },
+    })
+  : null;
 
 function shiftIsoDay(base: string, days: number) {
   const date = new Date(`${base}T12:00:00Z`);
@@ -517,6 +527,84 @@ function applyConversationProgress(items: Word[]) {
   });
 }
 
+function userStorageKey(userId: string) {
+  return `${STORAGE_KEY}:${userId}`;
+}
+
+function isStoredState(value: unknown): value is StoredState {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as StoredState;
+  return Array.isArray(candidate.words) && Array.isArray(candidate.logs);
+}
+
+function parseStoredState(key: string) {
+  try {
+    const value = localStorage.getItem(key);
+    if (!value) return null;
+    const parsed = JSON.parse(value) as unknown;
+    return isStoredState(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function mergeById<T extends { id: string }>(older: T[] = [], newer: T[] = []) {
+  const merged = new Map(older.map((item) => [item.id, item]));
+  newer.forEach((item) => merged.set(item.id, item));
+  return Array.from(merged.values());
+}
+
+function mergeStoryProgress(older: Record<string, StoryProgress> = {}, newer: Record<string, StoryProgress> = {}) {
+  const merged = { ...older };
+  Object.entries(newer).forEach(([key, value]) => {
+    const current = merged[key];
+    if (!current || new Date(value.updatedAt).getTime() >= new Date(current.updatedAt).getTime()) merged[key] = value;
+  });
+  return merged;
+}
+
+function stateTimestamp(state: StoredState | null) {
+  const timestamp = state?.savedAt ? new Date(state.savedAt).getTime() : 0;
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function mergeStoredStates(local: StoredState, remote: StoredState) {
+  const remoteIsNewer = stateTimestamp(remote) >= stateTimestamp(local);
+  const older = remoteIsNewer ? local : remote;
+  const newer = remoteIsNewer ? remote : local;
+  return {
+    words: mergeStoredWords([...(older.words ?? []), ...(newer.words ?? [])]),
+    logs: mergeById(older.logs, newer.logs),
+    practiceLogs: mergeById(older.practiceLogs, newer.practiceLogs),
+    history: mergeById(older.history, newer.history),
+    stories: mergeById(older.stories, newer.stories),
+    storyProgress: mergeStoryProgress(older.storyProgress, newer.storyProgress),
+    dailyNewLimits: newer.dailyNewLimits ?? older.dailyNewLimits,
+    studyLanguage: newer.studyLanguage ?? older.studyLanguage,
+    schemaVersion: 4,
+    savedAt: new Date(Math.max(stateTimestamp(local), stateTimestamp(remote), Date.now())).toISOString(),
+  } satisfies StoredState;
+}
+
+function syncFingerprint(state: StoredState) {
+  const { savedAt: _savedAt, ...content } = state;
+  return JSON.stringify(content);
+}
+
+function starterStoredState() {
+  return {
+    words: INITIAL_WORDS,
+    logs: [],
+    practiceLogs: [],
+    history: CONVERSATION_PROGRESS,
+    stories: INITIAL_STORIES,
+    storyProgress: {},
+    dailyNewLimits: { en: 10, ja: 10 },
+    studyLanguage: "en",
+    schemaVersion: 4,
+  } satisfies StoredState;
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("today");
   const [words, setWords] = useState<Word[]>(INITIAL_WORDS);
@@ -545,116 +633,184 @@ export default function Home() {
   const [greeting, setGreeting] = useState("下午好");
   const [today, setToday] = useState(MIGRATION_DATE);
   const [cloudReady, setCloudReady] = useState(false);
+  const [cloudUser, setCloudUser] = useState<User | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("loading");
   const [backupStatus, setBackupStatus] = useState("");
   const [trainingMode, setTrainingMode] = useState<TrainingMode | null>(null);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
   const [appInstalled, setAppInstalled] = useState(false);
+  const activeStorageKeyRef = useRef(STORAGE_KEY);
+  const localSnapshotRef = useRef<StoredState | null>(null);
+  const currentUserIdRef = useRef<string | null>(null);
+  const identityInitializedRef = useRef(false);
+  const lastSyncedFingerprintRef = useRef("");
+
+  const applyStoredState = useCallback((saved: StoredState) => {
+    if (Array.isArray(saved.words)) setWords(applyConversationProgress(mergeStoredWords(saved.words)));
+    if (Array.isArray(saved.logs)) setLogs(saved.logs);
+    if (Array.isArray(saved.practiceLogs)) setPracticeLogs(saved.practiceLogs);
+    if (Array.isArray(saved.history)) {
+      const mergedHistory = new Map(CONVERSATION_PROGRESS.map((item) => [item.id, item]));
+      saved.history.forEach((item) => mergedHistory.set(item.id, item));
+      setHistory(Array.from(mergedHistory.values()));
+    }
+    if (Array.isArray(saved.stories)) {
+      const mergedStories = new Map(INITIAL_STORIES.map((story) => [story.id, story]));
+      saved.stories.forEach((story) => mergedStories.set(story.id, story));
+      setStories(Array.from(mergedStories.values()));
+    }
+    setStoryProgress(saved.storyProgress ?? {});
+    if (saved.dailyNewLimits) setDailyNewLimits(saved.dailyNewLimits);
+    else if (saved.dailyNewLimit) setDailyNewLimits({ en: saved.dailyNewLimit, ja: saved.dailyNewLimit });
+    if (saved.studyLanguage) setStudyLanguage(saved.studyLanguage);
+  }, []);
+
+  const currentStoredState = () => ({
+    words,
+    logs,
+    practiceLogs,
+    history,
+    stories,
+    storyProgress,
+    dailyNewLimits,
+    studyLanguage,
+    schemaVersion: 4,
+    savedAt: new Date().toISOString(),
+  } satisfies StoredState);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as StoredState;
-        if (Array.isArray(parsed.words)) {
-          const mergedWords = mergeStoredWords(parsed.words);
-          setWords(localStorage.getItem(PROGRESS_MIGRATION_KEY) ? mergedWords : applyConversationProgress(mergedWords));
-        }
-        if (Array.isArray(parsed.logs)) setLogs(parsed.logs);
-        if (Array.isArray(parsed.practiceLogs)) setPracticeLogs(parsed.practiceLogs);
-        if (Array.isArray(parsed.history)) {
-          const mergedHistory = new Map(CONVERSATION_PROGRESS.map((item) => [item.id, item]));
-          parsed.history.forEach((item) => mergedHistory.set(item.id, item));
-          setHistory(Array.from(mergedHistory.values()));
-        }
-        if (Array.isArray(parsed.stories)) {
-          const mergedStories = new Map(INITIAL_STORIES.map((story) => [`${story.language}:${story.title}`, story]));
-          parsed.stories.forEach((story) => mergedStories.set(`${story.language}:${story.title}`, story));
-          setStories(Array.from(mergedStories.values()));
-        }
-        if (parsed.storyProgress && typeof parsed.storyProgress === "object") setStoryProgress(parsed.storyProgress);
-        if (parsed.dailyNewLimits) setDailyNewLimits(parsed.dailyNewLimits);
-        else if (parsed.dailyNewLimit) setDailyNewLimits({ en: parsed.dailyNewLimit, ja: parsed.dailyNewLimit });
-        if (parsed.studyLanguage) setStudyLanguage(parsed.studyLanguage);
-      }
-      const savedTheme = localStorage.getItem(THEME_KEY) as ThemeSetting | null;
-      if (savedTheme) setTheme(savedTheme);
-      const savedLanguage = localStorage.getItem(LANGUAGE_KEY) as Language | null;
-      if (savedLanguage === "en" || savedLanguage === "ja") setStudyLanguage(savedLanguage);
-    } catch {
-      // Keep the bundled starter data if local data is invalid.
-    }
+    const saved = parseStoredState(STORAGE_KEY);
+    localSnapshotRef.current = saved;
+    if (saved) applyStoredState(saved);
+    const savedTheme = localStorage.getItem(THEME_KEY) as ThemeSetting | null;
+    if (savedTheme) setTheme(savedTheme);
+    const savedLanguage = localStorage.getItem(LANGUAGE_KEY) as Language | null;
+    if (savedLanguage === "en" || savedLanguage === "ja") setStudyLanguage(savedLanguage);
     const hour = new Date().getHours();
     setGreeting(hour < 6 ? "夜深了" : hour < 12 ? "上午好" : hour < 18 ? "下午好" : "晚上好");
     setToday(isoDay());
     setHydrated(true);
     localStorage.setItem(PROGRESS_MIGRATION_KEY, "completed");
     if ("serviceWorker" in navigator) navigator.serviceWorker.register(`${APP_BASE_URL}sw.js`).catch(() => undefined);
-  }, []);
+  }, [applyStoredState]);
 
   useEffect(() => {
     if (!hydrated) return;
-    if (STATIC_HOSTED) {
+    if (!supabase) {
       setSyncStatus("offline");
       setCloudReady(true);
       return;
     }
     let cancelled = false;
-    const loadCloud = async () => {
+    const syncForUser = async (user: User | null) => {
+      if (cancelled) return;
+      const nextUserId = user?.id ?? null;
+      if (identityInitializedRef.current && currentUserIdRef.current === nextUserId) return;
+      identityInitializedRef.current = true;
+      currentUserIdRef.current = nextUserId;
+      setCloudUser(user);
+      setCloudReady(false);
+      lastSyncedFingerprintRef.current = "";
+
+      if (!user) {
+        activeStorageKeyRef.current = STORAGE_KEY;
+        const anonymous = parseStoredState(STORAGE_KEY);
+        if (anonymous) applyStoredState(anonymous);
+        else applyStoredState(starterStoredState());
+        setSyncStatus("signed-out");
+        setCloudReady(true);
+        return;
+      }
+
       setSyncStatus("loading");
+      const scopedKey = userStorageKey(user.id);
+      activeStorageKeyRef.current = scopedKey;
+      const scopedState = parseStoredState(scopedKey);
+      const legacyOwner = localStorage.getItem(CLOUD_OWNER_KEY);
+      const legacyState = !scopedState && (!legacyOwner || legacyOwner === user.id) ? localSnapshotRef.current : null;
+      const localState = scopedState ?? legacyState ?? starterStoredState();
+      if (scopedState || legacyState) applyStoredState(localState);
+
       try {
-        const response = await fetch("/api/state", { cache: "no-store" });
-        if (!response.ok) throw new Error("cloud unavailable");
-        const result = await response.json() as { state?: StoredState | null };
-        const saved = result.state;
-        if (!cancelled && saved) {
-          if (Array.isArray(saved.words)) setWords(applyConversationProgress(mergeStoredWords(saved.words)));
-          if (Array.isArray(saved.logs)) setLogs(saved.logs);
-          if (Array.isArray(saved.practiceLogs)) setPracticeLogs(saved.practiceLogs);
-          if (Array.isArray(saved.history)) setHistory(saved.history);
-          if (Array.isArray(saved.stories)) setStories(saved.stories);
-          if (saved.storyProgress) setStoryProgress(saved.storyProgress);
-          if (saved.dailyNewLimits) setDailyNewLimits(saved.dailyNewLimits);
-          if (saved.studyLanguage) setStudyLanguage(saved.studyLanguage);
+        const { data, error } = await supabase
+          .from("yici_states")
+          .select("state,updated_at")
+          .eq("owner_id", user.id)
+          .maybeSingle();
+        if (error) throw error;
+        const remoteState = isStoredState(data?.state)
+          ? { ...data.state, savedAt: data.state.savedAt ?? data.updated_at }
+          : null;
+        const merged = remoteState ? mergeStoredStates(localState, remoteState) : { ...localState, schemaVersion: 4, savedAt: new Date().toISOString() };
+        const { error: saveError } = await supabase.from("yici_states").upsert({
+          owner_id: user.id,
+          state: merged,
+          schema_version: 4,
+        }, { onConflict: "owner_id" });
+        if (saveError) throw saveError;
+        if (cancelled) return;
+        applyStoredState(merged);
+        localStorage.setItem(scopedKey, JSON.stringify(merged));
+        localSnapshotRef.current = merged;
+        lastSyncedFingerprintRef.current = syncFingerprint(merged);
+        if (legacyState && !scopedState) {
+          localStorage.setItem(CLOUD_OWNER_KEY, user.id);
+          localStorage.removeItem(STORAGE_KEY);
         }
-        if (!cancelled) setSyncStatus("synced");
-      } catch {
-        if (!cancelled) setSyncStatus("offline");
+        setSyncStatus("synced");
+        setBackupStatus("已连接账户，学习进度会自动跨设备同步。");
+      } catch (error) {
+        if (cancelled) return;
+        applyStoredState(localState);
+        localStorage.setItem(scopedKey, JSON.stringify(localState));
+        localSnapshotRef.current = localState;
+        const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
+        setSyncStatus(code === "42P01" || code === "PGRST205" ? "error" : "offline");
+        setBackupStatus(code === "42P01" || code === "PGRST205" ? "云端数据表尚未创建，请先执行 Supabase 迁移。" : "云端暂时不可用，进度已安全保存在本机，联网后会再次同步。");
       } finally {
         if (!cancelled) setCloudReady(true);
       }
     };
-    loadCloud();
-    return () => { cancelled = true; };
-  }, [hydrated]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ words, logs, practiceLogs, history, stories, storyProgress, dailyNewLimits, studyLanguage, schemaVersion: 3, savedAt: new Date().toISOString() } satisfies StoredState));
-    localStorage.setItem(LANGUAGE_KEY, studyLanguage);
-  }, [words, logs, practiceLogs, history, stories, storyProgress, dailyNewLimits, studyLanguage, hydrated]);
+    void supabase.auth.getSession().then(({ data }) => syncForUser(data.session?.user ?? null));
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const nextUserId = session?.user.id ?? null;
+      if (nextUserId !== currentUserIdRef.current) window.setTimeout(() => void syncForUser(session?.user ?? null), 0);
+    });
+    return () => {
+      cancelled = true;
+      authListener.subscription.unsubscribe();
+    };
+  }, [applyStoredState, hydrated]);
 
   useEffect(() => {
     if (!hydrated || !cloudReady) return;
-    if (STATIC_HOSTED) return;
+    const state = currentStoredState();
+    localStorage.setItem(activeStorageKeyRef.current, JSON.stringify(state));
+    localStorage.setItem(LANGUAGE_KEY, studyLanguage);
+    localSnapshotRef.current = state;
+    if (!supabase || !cloudUser) return;
+    const fingerprint = syncFingerprint(state);
+    if (fingerprint === lastSyncedFingerprintRef.current) return;
     const timer = window.setTimeout(async () => {
       setSyncStatus("saving");
-      const state: StoredState = { words, logs, practiceLogs, history, stories, storyProgress, dailyNewLimits, studyLanguage, schemaVersion: 3, savedAt: new Date().toISOString() };
       try {
-        const response = await fetch("/api/state", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(state) });
-        if (!response.ok) throw new Error("save failed");
+        const { error } = await supabase.from("yici_states").upsert({ owner_id: cloudUser.id, state, schema_version: 4 }, { onConflict: "owner_id" });
+        if (error) throw error;
+        lastSyncedFingerprintRef.current = fingerprint;
         setSyncStatus("synced");
-        const snapshots = JSON.parse(localStorage.getItem(SNAPSHOTS_KEY) || "[]") as StoredState[];
+        const snapshotKey = `${SNAPSHOTS_KEY}:${cloudUser.id}`;
+        const snapshots = JSON.parse(localStorage.getItem(snapshotKey) || "[]") as StoredState[];
         const last = snapshots.at(-1)?.savedAt;
         if (!last || Date.now() - new Date(last).getTime() > 300_000) {
-          localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify([...snapshots, state].slice(-5)));
+          localStorage.setItem(snapshotKey, JSON.stringify([...snapshots, state].slice(-5)));
         }
       } catch {
         setSyncStatus("offline");
+        setBackupStatus("云端保存失败，最新进度仍保留在本机，将在下次修改时重试。");
       }
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [words, logs, practiceLogs, history, stories, storyProgress, dailyNewLimits, studyLanguage, hydrated, cloudReady]);
+  }, [words, logs, practiceLogs, history, stories, storyProgress, dailyNewLimits, studyLanguage, hydrated, cloudReady, cloudUser]);
 
   useEffect(() => {
     const standalone = window.matchMedia("(display-mode: standalone)").matches;
@@ -693,6 +849,10 @@ export default function Home() {
   const selectedHistory = useMemo(() => history.filter((item) => item.language === studyLanguage), [history, studyLanguage]);
   const dailyNewLimit = dailyNewLimits[studyLanguage];
   const languageName = studyLanguage === "en" ? "TOEIC 英语" : "日语 N3";
+  const learnerName = cloudUser?.user_metadata?.full_name
+    || cloudUser?.user_metadata?.user_name
+    || cloudUser?.email?.split("@")[0]
+    || "学习者";
   const dueWords = useMemo(
     () => selectedWords.filter((word) => word.status !== "new" && word.dueDate <= today).sort((a, b) => a.dueDate.localeCompare(b.dueDate)),
     [selectedWords, today],
@@ -1102,8 +1262,10 @@ export default function Home() {
           <div className="dashboard-grid page-enter">
             <section className="dashboard-main">
               <header className="page-header hero-header">
-                <div><p className="eyebrow"><Sparkles size={15} /> {studyLanguage === "en" ? "TOEIC 420 → 600+" : "新日本语教程 · N3目标"}</p><h1>{greeting}，苏慧豪</h1><p>{languageName}独立学习空间 · 先完成到期复习，再开始新词。</p></div>
-                <div className={`sync-pill ${syncStatus}`}>{syncStatus === "offline" ? <CloudOff size={16} /> : <Cloud size={16} />}<span>{syncStatus === "loading" ? "正在读取云端" : syncStatus === "saving" ? "正在保存" : syncStatus === "synced" ? "已同步" : "离线缓存"}</span></div>
+                <div><p className="eyebrow"><Sparkles size={15} /> {studyLanguage === "en" ? "TOEIC 420 → 600+" : "新日本语教程 · N3目标"}</p><h1>{greeting}，{learnerName}</h1><p>{languageName}独立学习空间 · 先完成到期复习，再开始新词。</p></div>
+                {syncStatus === "signed-out"
+                  ? <a className="sync-pill signed-out" href={ACCOUNT_URL} aria-label="登录后同步"><CloudOff size={16} /><span>登录后同步</span></a>
+                  : <div className={`sync-pill ${syncStatus}`}>{syncStatus === "offline" || syncStatus === "error" ? <CloudOff size={16} /> : <Cloud size={16} />}<span>{syncStatus === "loading" ? "正在读取云端" : syncStatus === "saving" ? "正在保存" : syncStatus === "synced" ? "已同步" : syncStatus === "error" ? "需要配置云端" : "离线缓存"}</span></div>}
               </header>
 
               <div className="section-title"><span />今日概览</div>
@@ -1464,8 +1626,8 @@ function StatsPage({ words, logs, practiceLogs, history, languageName, syncStatu
       <div className="stats-overview"><article><span><BookOpen /></span><p>词汇总量<strong>{words.length}</strong></p></article><article><span><Target /></span><p>已掌握<strong>{mastered}</strong></p></article><article><span><Brain /></span><p>预计保持率<strong>{averageRetention}%</strong></p></article><article><span><Flame /></span><p>累计复习<strong>{logs.length}</strong></p></article></div>
       <article className="data-safety-card">
         <div className="safety-icon"><DatabaseBackup /></div>
-        <div><p className="eyebrow">数据保护</p><h2>{syncStatus === "synced" ? "学习数据已保存到云端" : syncStatus === "offline" ? "当前使用离线缓存" : syncStatus === "saving" ? "正在保存最新进度" : "正在读取云端数据"}</h2><p>{STATIC_HOSTED ? "GitHub Pages 版本将学习进度保存在当前浏览器；建议定期下载完整备份，换设备时可直接恢复。" : "云端数据用于跨设备继续学习；本机同时保留最近快照。你也可以随时下载完整备份。"}</p>{backupStatus && <small>{backupStatus}</small>}</div>
-        <div className="safety-actions"><button className="outline-button" onClick={onExport}><Download size={17} />下载完整备份</button><label className="solid-button"><Upload size={17} />恢复备份<input type="file" accept=".json,application/json" onChange={onRestore} /></label></div>
+        <div><p className="eyebrow">数据保护</p><h2>{syncStatus === "synced" ? "学习数据已保存到云端" : syncStatus === "signed-out" ? "登录后开启跨设备同步" : syncStatus === "offline" ? "当前使用离线缓存" : syncStatus === "error" ? "云端同步尚未启用" : syncStatus === "saving" ? "正在保存最新进度" : "正在读取云端数据"}</h2><p>{SUPABASE_CONFIGURED ? "登录后，云端记录会与本机进度合并；离线时仍可学习，恢复连接后继续同步。" : "当前构建未配置 Supabase，学习进度只保存在本机浏览器。"}</p>{backupStatus && <small>{backupStatus}</small>}</div>
+        <div className="safety-actions">{syncStatus === "signed-out" && <a className="solid-button" href={ACCOUNT_URL}><Cloud size={17} />登录同步</a>}<button className="outline-button" onClick={onExport}><Download size={17} />下载完整备份</button><label className="solid-button"><Upload size={17} />恢复备份<input type="file" accept=".json,application/json" onChange={onRestore} /></label></div>
       </article>
       <div className="analytics-grid">
         <article className="analytics-card"><div className="card-head"><div><h2>近 7 天复习量</h2><p>每日完成的复习卡片</p></div><strong>{logs.length}</strong></div><div className="bar-chart">{counts.map((count, index) => <div className="bar-column" key={recentDays[index]}><span className="bar-value">{count || ""}</span><i style={{ height: `${Math.max(5, (count / maxCount) * 100)}%` }} /><small>{recentDays[index].slice(5).replace("-", "/")}</small></div>)}</div></article>

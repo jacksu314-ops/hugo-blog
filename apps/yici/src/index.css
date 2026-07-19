@@ -148,7 +148,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .focus-note svg { color: var(--accent); }
 .sync-pill { min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; color: var(--muted); background: var(--panel); font-size: 11px; white-space: nowrap; }
 .sync-pill.synced { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: var(--accent-soft); }
-.sync-pill.offline { color: var(--warning); background: var(--warning-soft); }
+.sync-pill.offline, .sync-pill.signed-out { color: var(--warning); background: var(--warning-soft); }
+.sync-pill.error { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, var(--panel)); }
+a.sync-pill { text-decoration: none; }
 .daily-plan-card { margin: 0 0 20px; padding: 22px 24px; border: 1px solid var(--border); border-radius: 17px; background: var(--panel); box-shadow: var(--shadow); }
 .daily-plan-card .card-head .eyebrow { margin: 0 0 5px; }
 .daily-plan-card .card-head > span { color: var(--muted); font-size: 11px; }
